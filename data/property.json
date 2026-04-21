@@ -1,0 +1,68 @@
+{
+  "project_name": "UPDATE — Name of the development",
+  "location": {
+    "country": "UPDATE",
+    "region": "UPDATE",
+    "city": "UPDATE",
+    "description": "UPDATE — 1-2 sentence location pitch"
+  },
+  "inventory": {
+    "lots": {
+      "total": 89,
+      "available": 89,
+      "size_range": "UPDATE — e.g. 500-2000 sqm",
+      "price_range": "UPDATE — e.g. $45,000 - $180,000"
+    },
+    "complex_units": {
+      "total": "UPDATE",
+      "available": "UPDATE",
+      "types": "UPDATE — e.g. 1BR, 2BR, 3BR",
+      "price_range": "UPDATE"
+    }
+  },
+  "deal_structure": {
+    "type": "profit share with property owner",
+    "details": "UPDATE — what the profit share looks like"
+  },
+  "key_selling_points": [
+    "UPDATE — point 1",
+    "UPDATE — point 2",
+    "UPDATE — point 3"
+  ],
+  "target_audiences": [
+    {
+      "segment": "investors",
+      "hook": "UPDATE — what makes this attractive to investors",
+      "budget_range": "UPDATE"
+    },
+    {
+      "segment": "homebuyers",
+      "hook": "UPDATE — what makes this attractive to homebuyers",
+      "budget_range": "UPDATE"
+    },
+    {
+      "segment": "retirees",
+      "hook": "UPDATE — if applicable",
+      "budget_range": "UPDATE"
+    }
+  ],
+  "amenities": [
+    "UPDATE — nearby amenities, infrastructure, attractions"
+  ],
+  "timeline": {
+    "phase_1": "UPDATE — what's happening now",
+    "completion": "UPDATE — expected completion"
+  },
+  "media": {
+    "photos": [],
+    "drone_video": "",
+    "lot_map": "",
+    "brochure": ""
+  },
+  "contact": {
+    "sales_name": "UPDATE",
+    "sales_email": "UPDATE",
+    "sales_phone": "UPDATE",
+    "sales_whatsapp": "UPDATE"
+  }
+}

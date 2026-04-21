@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paradise Lots — Your Piece of Paradise</title>
+  <style>
+    :root {
+      --primary: #1a5632;
+      --primary-light: #2d7a4a;
+      --accent: #d4a843;
+      --bg: #fafaf7;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #ddd;
+      --white: #fff;
+      --radius: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--text);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .feature h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .feature p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .form-section {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    .form-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-section .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--text);
+    }
+
+    input, select, textarea {
+      padding: 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .submit-btn {
+      grid-column: 1 / -1;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 0.9rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { background: var(--primary-light); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .success-message h3 {
+      color: var(--primary);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.6rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .container { padding: 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <h1>89 Lots. One Opportunity.</h1>
+    <p>Premium development lots and residential units in a growing community. Investors and homebuyers welcome.</p>
+    <span class="badge">Now Available — Limited Inventory</span>
+  </section>
+
+  <div class="container">
+    <div class="features">
+      <div class="feature">
+        <h3>Residential Lots</h3>
+        <p>89 individual lots ready for development. Multiple sizes and price points available.</p>
+      </div>
+      <div class="feature">
+        <h3>Complex Units</h3>
+        <p>Move-in ready units in the residential complex. Ideal for buyers or rental investors.</p>
+      </div>
+      <div class="feature">
+        <h3>Profit Share Structure</h3>
+        <p>Flexible deal structure with the property owner. Ask us about investment opportunities.</p>
+      </div>
+    </div>
+
+    <div class="form-section" id="form-container">
+      <h2>Get the Details</h2>
+      <p class="subtitle">Tell us what you're looking for and we'll send you the full property package.</p>
+
+      <form id="lead-form" class="form-grid" onsubmit="return handleSubmit(event)">
+        <input type="hidden" name="source" id="source" value="">
+        <input type="hidden" name="timestamp" id="timestamp" value="">
+
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+
+        <div class="form-group">
+          <label for="interest">I'm Interested In *</label>
+          <select id="interest" name="interest" required>
+            <option value="">Select one...</option>
+            <option value="lot">A Development Lot</option>
+            <option value="unit">A Complex Unit</option>
+            <option value="investment">Investment Opportunity</option>
+            <option value="multiple">Multiple Properties</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="budget">Budget Range *</label>
+          <select id="budget" name="budget" required>
+            <option value="">Select range...</option>
+            <option value="under-100k">Under $100K</option>
+            <option value="100k-250k">$100K - $250K</option>
+            <option value="250k-500k">$250K - $500K</option>
+            <option value="500k-plus">$500K+</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="timeline">Purchase Timeline</label>
+          <select id="timeline" name="timeline">
+            <option value="">Select timeline...</option>
+            <option value="asap">Ready Now</option>
+            <option value="1-3months">1-3 Months</option>
+            <option value="3-6months">3-6 Months</option>
+            <option value="exploring">Just Exploring</option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="message">Anything else we should know?</label>
+          <textarea id="message" name="message" placeholder="Questions, preferences, etc."></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">Send Me the Details</button>
+      </form>
+
+      <div class="success-message" id="success-message">
+        <h3>You're on the list.</h3>
+        <p>We'll send you the full property package within 24 hours. Keep an eye on your inbox.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Questions? Reply to any email we send you, or reach out directly.</p>
+  </footer>
+
+  <script>
+    // Capture UTM source
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById('source').value = params.get('utm_source') || 'direct';
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      const form = document.getElementById('lead-form');
+      const data = Object.fromEntries(new FormData(form));
+      data.timestamp = new Date().toISOString();
+
+      // POST to Google Apps Script web app
+      // Replace SCRIPT_URL with your deployed Apps Script URL
+      const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+
+      try {
+        if (SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+          await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+        }
+
+        form.style.display = 'none';
+        document.getElementById('success-message').style.display = 'block';
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Send Me the Details';
+        alert('Something went wrong. Please try again.');
+      }
+    }
+  </script>
+
+</body>
+</html>

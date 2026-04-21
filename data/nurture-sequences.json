@@ -1,0 +1,94 @@
+{
+  "sequences": {
+    "hot_lead": {
+      "description": "Score 8-10. Fast, direct, get them on a call.",
+      "steps": [
+        {
+          "day": 0,
+          "channel": "phone",
+          "action": "Call immediately. If no answer, leave voicemail + WhatsApp."
+        },
+        {
+          "day": 0,
+          "channel": "email",
+          "action": "Send property package with personalized note referencing their interest."
+        },
+        {
+          "day": 1,
+          "channel": "whatsapp",
+          "action": "Short follow-up: 'Sent you the property details yesterday — any questions I can answer?'"
+        },
+        {
+          "day": 3,
+          "channel": "email",
+          "action": "Share one specific detail that matches their interest (lot availability, ROI projection, etc.)"
+        },
+        {
+          "day": 7,
+          "channel": "phone",
+          "action": "Second call attempt. If no response after this, move to warm sequence."
+        }
+      ]
+    },
+    "warm_lead": {
+      "description": "Score 5-7. Nurture with value, don't push.",
+      "steps": [
+        {
+          "day": 0,
+          "channel": "email",
+          "action": "Send property package with brief personalized intro."
+        },
+        {
+          "day": 3,
+          "channel": "email",
+          "action": "Share a relevant update: new drone footage, infrastructure progress, lots sold this week."
+        },
+        {
+          "day": 7,
+          "channel": "whatsapp",
+          "action": "Light touch: 'Hi [name], just checking if you had a chance to look at the property info?'"
+        },
+        {
+          "day": 14,
+          "channel": "email",
+          "action": "Inventory update: how many lots remain, any price changes."
+        },
+        {
+          "day": 21,
+          "channel": "email",
+          "action": "Social proof: mention number of inquiries, lots reserved, investor interest."
+        },
+        {
+          "day": 30,
+          "channel": "email",
+          "action": "Final check-in. Low pressure. 'No rush — just wanted to make sure you have everything you need.'"
+        }
+      ]
+    },
+    "cool_lead": {
+      "description": "Score 3-4. Newsletter-style drip. Very light.",
+      "steps": [
+        {
+          "day": 0,
+          "channel": "email",
+          "action": "Thank them for their interest. Send a brief overview, not the full package."
+        },
+        {
+          "day": 14,
+          "channel": "email",
+          "action": "Development update: progress, timeline, community news."
+        },
+        {
+          "day": 30,
+          "channel": "email",
+          "action": "Market context: why this area, appreciation trends, investment case."
+        },
+        {
+          "day": 60,
+          "channel": "email",
+          "action": "Re-engagement: 'Still thinking about [location]? Here's what's changed since we last talked.'"
+        }
+      ]
+    }
+  }
+}
