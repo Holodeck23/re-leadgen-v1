@@ -1,99 +1,85 @@
 ---
-name: re-follow-up
-description: Draft personalized follow-up messages for qualified real estate leads
+name: follow-up
+description: Draft personalized follow-up messages (WhatsApp and email) for qualified real-estate leads, channel-selected by score tier and audience segment. Use after lead-qualifier has scored a lead, or when the user asks for follow-up copy for a specific row.
+user-invokable: true
 ---
 
-# Real Estate Follow-Up Drafter
+# Follow-Up Drafter (WhatsApp-first, multivariate)
 
-Draft personalized follow-up emails and WhatsApp messages for leads based on their
-score, interest, and the notes from the lead qualifier.
+You draft outreach messages for one lead at a time. Always tailor to the segment, the tier's channel preference, and the specific facts the lead shared in the form or last conversation.
 
-## When to Use
+## Process
 
-- After leads have been scored by the lead-qualifier skill
-- When follow_up_date is today or overdue
-- When a lead replies and needs a response
+1. **Load context.** Invoke `property-context` skill. If BLOCKED, STOP.
+2. **Load segment pitches.** Read `data/scoring-model.json` → `audience_segments.segments[]`. Find the segment matching the lead's assigned `segment` (from lead-qualifier output) and use its `pitch` as the content spine.
+3. **Pick channel.** Use `tiers.{tier}.channel`:
+   - `hot` (score ≥70): WhatsApp first, then phone call, then email artifact.
+   - `nurture` (40–69): Email first (artifact-bearing), WhatsApp follow-up if no reply in 48h.
+   - `long_cycle` (<40): Email drip only.
+4. **Check reply history.** If the lead has prior `notes` indicating earlier outreach, produce the next message in the sequence (re-engagement, not first-contact).
+5. **Draft per-channel versions.** For the chosen primary channel, produce 2 variants (A/B). For the secondary channel (when applicable), produce 1.
 
-## Nurture Sequences
+## Channel rules
 
-Read `data/nurture-sequences.json` before drafting. It defines the drip cadence
-for each lead tier (hot, warm, cool). Match the message type and timing to where
-the lead is in their sequence. Check the lead's status and last contact date to
-determine which step they're on.
+### WhatsApp
+- ≤3 sentences. First sentence names them and one specific thing they said or asked about.
+- End with one question OR one specific next step (e.g. "Want me to send the Phase 1 lot map?").
+- No greeting boilerplate ("Hi, hope you're doing well"). Open with the content.
+- No emojis unless the lead used one first.
 
-## Property Reference
+### Email
+- 5–8 sentences, plain text (no HTML unless explicitly asked).
+- Subject line: specific, ≤55 chars. Reference project name + a concrete number or the lead's stated interest. Never use "Following up", "Touching base", "Quick question".
+- Body opens with a direct acknowledgment of what they asked + one proof point from `property-context`. Attach or link one artifact (brochure, lot map, video).
+- One CTA. Prefer "Reply with the lot number that caught your eye" over generic "let me know".
 
-Read `data/property.json` for listing details. Never make up facts about the
-property. If the property data is incomplete (fields say "UPDATE"), flag it
-and skip that detail rather than inventing something.
+## Segment content spines (use literally, adapt wording)
 
-## Message Types
+- **investor**: ROI pitch + appreciation (Phase-2 price bump, comparable-sales lift) + rental/build-to-sell math if available.
+- **homebuyer**: Lifestyle + lot size + schools/community + access (road, airport, hospital).
+- **retiree**: Community + services + healthcare access + climate + security.
+- **expat**: Residency/visa process + title clarity + foreign-ownership rules + tax.
+- **generic**: Lead with the single strongest property proof point, then ask the qualifying question that will route them to a segment.
 
-### 1. Initial Outreach (status: qualified, no prior contact)
+## Anti-slop (from CLAUDE.md — non-negotiable)
 
-**Email** — Send the property package. Personalize based on their interest type.
+Do not use: "nestled in", "boasts", "stunning", "hidden gem", "paradise awaits", "don't miss out", "I hope this finds you well", "just checking in", "touching base", em-dashes, three-dot ellipses, any filler adjective.
 
-Template structure:
-- Subject line: specific to their interest, not generic
-- Opening: acknowledge what they asked about (from form message field)
-- Body: 2-3 key facts about the property that match their interest
-- Attachment mention: "I've attached the full property package with lot maps, pricing, and the development timeline."
-- CTA: suggest a specific next step (call, WhatsApp, reply)
-- Sign-off: casual professional, not corporate
+Every draft must reference at least one of: a specific lot or unit, a specific price or price range, a specific timeline date, a specific amenity name, or something the lead said verbatim.
 
-**WhatsApp** — Shorter version. 3-4 sentences max. Link to property package instead of attachment.
+## Output shape
 
-### 2. Nurture (status: nurture, score 3-4)
-
-Lighter touch. Share one interesting update or fact about the development.
-No hard sell. Keep the door open.
-
-Examples:
-- "[N] lots sold this month — inventory moving."
-- "New drone footage of the development just came in. Want to see it?"
-- "Quick update: infrastructure work on Phase 1 starts [date]."
-
-### 3. Hot Lead Follow-Up (score 8-10, no response to initial outreach)
-
-More direct. Acknowledge they're busy. Offer a specific time for a quick call.
-Make it easy to say yes.
-
-### 4. Re-Engagement (status: cold or no response after 2+ follow-ups)
-
-One final touch. Low pressure. "No worries if the timing isn't right —
-just wanted to make sure you had everything you needed."
-
-## Writing Rules
-
-1. **First person, casual professional.** Not "Dear valued prospect." Just talk like a person.
-2. **No AI slop.** No "I hope this email finds you well." No "I wanted to reach out." No "don't hesitate to."
-3. **Reference something specific** from their form submission. Budget, interest type, message — anything that shows this isn't a blast.
-4. **Keep it short.** Emails: 5-8 sentences. WhatsApp: 3-4 sentences.
-5. **One CTA per message.** Don't ask them to call AND email AND visit a website.
-6. **Match urgency to score.** Hot leads get "when works for a quick call?" Cool leads get "no rush."
-
-## Output Format
-
-```
-## [Lead Name] — [Message Type]
-
-**Channel:** Email / WhatsApp
-**Subject:** [for email only]
-
----
-
-[Message body]
-
----
-
-**Send by:** [date]
-**Next step if no response:** [what to do and when]
+```json
+{
+  "lead_id": "...",
+  "tier": "hot",
+  "segment": "investor",
+  "channel_primary": "whatsapp",
+  "channel_secondary": "email",
+  "drafts": {
+    "whatsapp": [
+      { "variant": "A", "text": "..." },
+      { "variant": "B", "text": "..." }
+    ],
+    "email": [
+      { "variant": "A", "subject": "...", "body": "..." }
+    ]
+  },
+  "send_at": "immediate" | "next_business_hour" | "YYYY-MM-DDTHH:MM",
+  "expected_next_action": "If reply within 24h, book call. If no reply in 48h, send email variant A."
+}
 ```
 
-## Batch Mode
+## Guardrails
 
-When processing multiple leads, group by message type and generate all at once.
-Output a summary table at the end:
+- Never fabricate property facts. Every claim comes from `property-context`.
+- Never send "Hi {name}, thanks for your interest" — that's the exact pattern we're replacing.
+- If the lead's message contained a question, answer it in the first sentence.
+- If you cannot personalize past {name, interest}, flag it in `expected_next_action` and keep the draft ≤2 sentences.
 
-| Lead | Score | Channel | Subject/Hook | Send By |
-|------|-------|---------|-------------|---------|
+## Files this skill reads
+
+- `data/property.json` (via `property-context`)
+- `data/scoring-model.json` (for segment pitches)
+- The lead record passed in by caller (with score, tier, segment from `lead-qualifier`)
+- Optional: `data/nurture-sequences.json` if the lead is in an ongoing sequence

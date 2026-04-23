@@ -1,0 +1,36 @@
+{
+  "as_of": "2026-04-21T15:00:00Z",
+  "ad_account_id": "act_000",
+  "adsets": [
+    {
+      "adset_id": "adset_stale_001",
+      "adset_name": "Lots - April - Reel03 - Investors",
+      "campaign_id": "camp_001",
+      "effective_status": "ACTIVE",
+      "daily_budget_usd": 40.0,
+      "timeframes": {
+        "today":     {"timeframe": "today",     "spend": 10.0, "impressions": 4000, "ctr": 0.0042, "frequency": 3.5, "hook_rate_3s": 0.12, "leads": 0,  "cpl": null},
+        "yesterday": {"timeframe": "yesterday", "spend": 30.0, "impressions": 9000, "ctr": 0.0046, "frequency": 3.4, "hook_rate_3s": 0.13, "leads": 1,  "cpl": 30.0},
+        "last_7_days":{"timeframe": "last_7_days","spend": 60.0, "impressions": 21000,"ctr": 0.0041, "frequency": 3.2, "hook_rate_3s": 0.14, "leads": 1,  "cpl": 60.0},
+        "lifetime":  {"timeframe": "lifetime",  "spend": 120.0,"impressions": 48000,"ctr": 0.0044, "frequency": 3.1, "hook_rate_3s": 0.15, "leads": 2,  "cpl": 60.0}
+      }
+    },
+    {
+      "adset_id": "adset_cheap_junk_002",
+      "adset_name": "Lots - April - CheapTraffic - Broad",
+      "campaign_id": "camp_001",
+      "effective_status": "ACTIVE",
+      "daily_budget_usd": 25.0,
+      "timeframes": {
+        "today":     {"timeframe": "today",     "spend": 8.0,  "impressions": 5000, "ctr": 0.018,  "frequency": 1.8, "hook_rate_3s": 0.28, "leads": 4,  "cpl": 2.00},
+        "yesterday": {"timeframe": "yesterday", "spend": 22.0, "impressions": 14000,"ctr": 0.019,  "frequency": 1.7, "hook_rate_3s": 0.30, "leads": 11, "cpl": 2.00},
+        "last_7_days":{"timeframe": "last_7_days","spend": 140.0,"impressions": 90000,"ctr": 0.020, "frequency": 1.6, "hook_rate_3s": 0.31, "leads": 70, "cpl": 2.00},
+        "lifetime":  {"timeframe": "lifetime",  "spend": 280.0,"impressions": 180000,"ctr":0.020,  "frequency": 1.5, "hook_rate_3s": 0.32, "leads": 140,"cpl": 2.00}
+      }
+    }
+  ],
+  "lead_quality_by_adset": [
+    {"adset_key": "lots-apr::reel-03",            "leads": 2,  "avg_score": 62.0, "hot_count": 1, "qualified_rate": 0.50},
+    {"adset_key": "lots-apr::cheap-traffic-broad","leads": 65, "avg_score": 14.0, "hot_count": 1, "qualified_rate": 0.05}
+  ]
+}
