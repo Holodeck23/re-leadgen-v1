@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "description": "Published thresholds used by reflective-ops, paid-ads, and ads-meta. Single source of truth for kill/scale decisions. Edit deliberately.",
+  "last_updated": "2026-04-21",
+  "targets": {
+    "cost_per_lead_usd": 25,
+    "cost_per_qualified_lead_usd": 60,
+    "min_lead_quality_score_to_count": 5,
+    "daily_budget_cap_usd": 300,
+    "cap_headroom_pct": 10
+  },
+  "kill_rules": {
+    "pause_ad_if": [
+      { "metric": "frequency", "op": ">", "value": 3.0, "min_spend_usd": 30 },
+      { "metric": "ctr", "op": "<", "value": 0.008, "min_spend_usd": 50 },
+      { "metric": "cpl", "op": ">", "value_multiplier_of_target": 2.0, "min_optimization_events": 50 },
+      { "metric": "hook_rate_3s", "op": "<", "value": 0.20, "min_spend_usd": 50 },
+      { "metric": "hold_rate", "op": "<", "value": 0.15, "min_spend_usd": 50 }
+    ],
+    "refresh_creative_if": [
+      { "metric": "ctr_wow_drop", "op": ">", "value": 0.15 },
+      { "metric": "frequency", "op": ">", "value": 2.5, "min_spend_usd": 50 }
+    ],
+    "require_lead_quality_gate_for_scale_up": true,
+    "min_avg_lead_score_for_scale_up": 5.0,
+    "min_days_profitable_for_scale_up": 3
+  },
+  "scale_rules": {
+    "scale_up_budget_pct": 20,
+    "scale_down_budget_pct": 20,
+    "max_auto_scale_per_day_usd": 50,
+    "launch_variant_if_library_has_untested": true,
+    "expand_audience_requires_approval": true,
+    "new_campaign_requires_approval": true
+  },
+  "approval_gates": {
+    "auto_approved_actions": ["pause", "scale_up", "scale_down", "refresh_variant", "hold"],
+    "escalate_actions": ["expand_audience", "new_campaign", "budget_shift_over_50_usd", "targeting_change", "disable_advantage_plus"]
+  },
+  "statistical_guardrails": {
+    "min_impressions_for_ctr_judgment": 1000,
+    "min_spend_usd_before_cpl_judgment": 50,
+    "min_leads_before_cpl_judgment": 10,
+    "evaluate_timeframes": ["today", "yesterday", "last_7_days", "lifetime"]
+  }
+}

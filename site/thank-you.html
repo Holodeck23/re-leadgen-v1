@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Thanks — we received your request</title>
+<link rel="icon" href="data:," />
+<style>
+  :root {
+    --fg: #111;
+    --muted: #555;
+    --bg: #fff;
+    --accent: #0a7;
+    --line: #e6e6e6;
+    --radius: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 48px 20px 96px; }
+  .kicker { color: var(--accent); font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; font-size: 12px; margin-bottom: 8px; }
+  h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.15; margin: 0 0 16px; }
+  p.lead { color: var(--muted); font-size: 18px; line-height: 1.55; margin: 0 0 24px; }
+  section { border-top: 1px solid var(--line); padding-top: 28px; margin-top: 32px; }
+  h2 { font-size: 20px; margin: 0 0 12px; }
+  ul { margin: 0 0 20px; padding-left: 20px; color: var(--muted); line-height: 1.6; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: var(--radius); text-decoration: none; font-weight: 600; border: 1px solid var(--fg); color: var(--fg); background: var(--bg); }
+  .cta.primary { background: var(--fg); color: #fff; }
+  .cta.whatsapp { background: #25D366; color: #fff; border-color: #25D366; }
+  form { display: grid; gap: 12px; margin-top: 12px; }
+  label { font-size: 14px; color: var(--muted); }
+  input[type="email"] { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius); font-size: 16px; font-family: inherit; }
+  button { padding: 12px 18px; border: 0; border-radius: var(--radius); background: var(--fg); color: #fff; font-weight: 600; font-size: 16px; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .hint { font-size: 13px; color: var(--muted); }
+  .ok { color: var(--accent); font-weight: 600; }
+  .calendly-wrap { margin-top: 16px; }
+  iframe.calendly { width: 100%; min-height: 680px; border: 0; border-radius: var(--radius); background: #fafafa; }
+  .hidden { display: none !important; }
+  footer { margin-top: 48px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">Request received</div>
+  <h1 id="headline">Thanks. We'll be in touch shortly.</h1>
+  <p class="lead" id="subhead">A specialist will reach you by WhatsApp within two business hours. You don't need to do anything else right now.</p>
+
+  <section id="hot-block" class="hidden">
+    <h2>Book a 15-minute call</h2>
+    <p class="hint">Your interest looks like a strong fit. Pick a slot that works — you'll get an immediate WhatsApp confirmation and the project brochure.</p>
+    <div class="calendly-wrap">
+      <iframe id="calendly-iframe" class="calendly" title="Book a call" src="about:blank" loading="lazy"></iframe>
+    </div>
+    <div class="cta-row">
+      <a id="whatsapp-cta" class="cta whatsapp" href="#" target="_blank" rel="noopener">WhatsApp us now</a>
+    </div>
+  </section>
+
+  <section id="warm-block">
+    <h2>Want the full project brief?</h2>
+    <p class="hint">Drop your email and we'll send the brochure, lot map, and pricing — no spam, unsubscribe anytime.</p>
+    <form id="email-form" novalidate>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+      <button type="submit" id="email-submit">Send me the brochure</button>
+      <div class="hint" id="email-status" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>While you wait</h2>
+    <ul>
+      <li>Check your WhatsApp — we'll message from the number on the homepage.</li>
+      <li>If you gave a landline, reply to our text with a number we can reach you on.</li>
+      <li>Have your budget range ready; we'll match you to the lots or units that actually fit.</li>
+    </ul>
+    <div class="cta-row">
+      <a href="./" class="cta">Back to the project</a>
+    </div>
+  </section>
+
+  <footer>
+    <span id="lead-ref"></span>
+  </footer>
+</main>
+
+<!-- Meta Pixel -->
+<script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  var PIXEL_ID = 'PIXEL_ID';                    // TODO: replace with real Meta Pixel ID
+  var FORM_HANDLER_URL = 'https://script.google.com/macros/s/REPLACE_WITH_DEPLOYED_APPS_SCRIPT_URL/exec';
+  var CALENDLY_URL = 'https://calendly.com/REPLACE_WITH_CALENDLY_HANDLE/15min';
+
+  var params = new URLSearchParams(window.location.search);
+  var leadId = params.get('lead_id') || '';
+  var interest = (params.get('interest') || '').toLowerCase();
+  var eventId = params.get('event_id') || leadId || randomId();
+  var isHot = interest === 'lot' || interest === 'unit' || interest === 'investment';
+
+  if (PIXEL_ID && PIXEL_ID !== 'PIXEL_ID') {
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
+    fbq('track', 'Lead', { content_name: 'landing_form_completed', interest: interest }, { eventID: eventId });
+  }
+
+  if (leadId) {
+    document.getElementById('lead-ref').textContent = 'Reference: ' + leadId;
+  }
+
+  if (isHot) {
+    document.getElementById('hot-block').classList.remove('hidden');
+    document.getElementById('headline').textContent = "Thanks. Let's get you on a call.";
+    document.getElementById('subhead').textContent = 'Based on what you told us, we want to walk you through the specific lots or units that fit. Pick a slot or message us now.';
+    loadCalendly();
+    loadWhatsAppFromProperty();
+  }
+
+  var form = document.getElementById('email-form');
+  form.addEventListener('submit', onEmailSubmit);
+
+  function onEmailSubmit(ev) {
+    ev.preventDefault();
+    var emailInput = document.getElementById('email');
+    var statusEl = document.getElementById('email-status');
+    var btn = document.getElementById('email-submit');
+    var email = (emailInput.value || '').trim();
+
+    if (!isValidEmail(email)) {
+      statusEl.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    btn.disabled = true;
+    statusEl.textContent = 'Sending…';
+
+    var payload = {
+      action: 'progressive_email',
+      lead_id: leadId,
+      event_id: eventId,
+      email: email,
+      interest: interest,
+      submitted_at: new Date().toISOString()
+    };
+
+    fetch(FORM_HANDLER_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).then(function () {
+      statusEl.innerHTML = '<span class="ok">Sent. Check your inbox in a few minutes.</span>';
+      if (window.fbq && PIXEL_ID && PIXEL_ID !== 'PIXEL_ID') {
+        fbq('track', 'CompleteRegistration', { content_name: 'email_capture' }, { eventID: eventId });
+      }
+    }).catch(function () {
+      statusEl.textContent = 'Could not send — please try again or WhatsApp us.';
+      btn.disabled = false;
+    });
+  }
+
+  function loadCalendly() {
+    var iframe = document.getElementById('calendly-iframe');
+    var url = CALENDLY_URL;
+    if (leadId) {
+      url += (url.indexOf('?') === -1 ? '?' : '&') + 'utm_source=thankyou&utm_content=' + encodeURIComponent(leadId);
+    }
+    iframe.src = url;
+  }
+
+  function loadWhatsAppFromProperty() {
+    fetch('./property.json', { cache: 'no-store' }).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (data) {
+      var wa = data && data.contact && data.contact.sales_whatsapp;
+      if (!wa || String(wa).indexOf('UPDATE') === 0) return;
+      var digits = String(wa).replace(/\D+/g, '');
+      var msg = encodeURIComponent("Hi, I just submitted the form. Reference: " + leadId);
+      document.getElementById('whatsapp-cta').href = 'https://wa.me/' + digits + '?text=' + msg;
+    }).catch(function () { /* silent */ });
+  }
+
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
+  function randomId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'ev-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+  }
+})();
+</script>
+</body>
+</html>

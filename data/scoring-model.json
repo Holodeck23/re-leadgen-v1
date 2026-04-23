@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "description": "BANT + behavioral + property-fit scoring. Used by lead-qualifier and agents/lead-scorer. Scores are additive to a max of 100. Tiers: >=70 hot, 40-69 nurture, <40 long-cycle.",
+  "last_updated": "2026-04-21",
+  "tiers": {
+    "hot": { "min": 70, "contact_within_hours": 2, "channel": "whatsapp_then_call" },
+    "nurture": { "min": 40, "max": 69, "contact_within_hours": 24, "channel": "email_then_whatsapp" },
+    "long_cycle": { "max": 39, "contact_within_days": 7, "channel": "email_drip" }
+  },
+  "features": {
+    "budget_capacity": {
+      "description": "B in BANT. How well their stated budget matches listing range from property.json.",
+      "weights": {
+        "pre_approved_or_cash": 30,
+        "budget_in_range": 20,
+        "budget_above_range": 12,
+        "budget_near_range_within_20pct": 10,
+        "budget_below_range": 0,
+        "budget_unknown": 0
+      }
+    },
+    "authority": {
+      "description": "A in BANT. Decision maker signal from form/message.",
+      "weights": {
+        "sole_decision_maker_stated": 8,
+        "decision_with_spouse_partner": 5,
+        "needs_approval_mentioned": 2
+      }
+    },
+    "need_specificity": {
+      "description": "N in BANT. How specific is their interest?",
+      "weights": {
+        "specific_lot_or_unit_named": 15,
+        "specific_interest_investment_or_residence": 10,
+        "multiple_properties": 12,
+        "generic_just_exploring": 0
+      }
+    },
+    "timeline": {
+      "description": "T in BANT. Urgency of decision.",
+      "weights": {
+        "ready_now_to_30_days": 25,
+        "one_to_three_months": 15,
+        "three_to_six_months": 8,
+        "six_plus_months": 3,
+        "just_exploring": 0
+      }
+    },
+    "behavioral": {
+      "description": "What they did, not what they said.",
+      "weights": {
+        "phone_provided": 5,
+        "whatsapp_provided": 6,
+        "detailed_message_over_50_chars": 5,
+        "asked_specific_questions": 6,
+        "return_visit_within_7_days": 10,
+        "reply_within_5_minutes_of_outreach": 10,
+        "engaged_with_first_followup": 15,
+        "viewed_brochure_or_video": 8,
+        "clicked_lot_map": 8
+      }
+    },
+    "source_quality": {
+      "description": "Which channel produced this lead? Organic outperforms cold ads.",
+      "weights": {
+        "organic_social": 10,
+        "referral": 15,
+        "direct_url": 8,
+        "retargeting_ad": 7,
+        "warm_lookalike_ad": 5,
+        "cold_prospecting_ad": 3,
+        "unknown": 0
+      }
+    },
+    "risk_flags": {
+      "description": "Negative signals. Subtract from total.",
+      "weights": {
+        "no_phone_and_no_message": -8,
+        "email_looks_disposable": -10,
+        "budget_well_below_range": -5,
+        "timeline_just_exploring_and_no_detail": -5,
+        "duplicate_within_30_days": -15
+      }
+    }
+  },
+  "audience_segments": {
+    "description": "Match a lead to one of these segments based on budget + interest + message. Used by follow-up skill for multivariate content selection.",
+    "segments": [
+      { "id": "investor", "signals": ["investment", "roi", "appreciation", "rental", "portfolio"], "pitch": "ROI + appreciation + rental demand" },
+      { "id": "homebuyer", "signals": ["family", "primary residence", "live", "move"], "pitch": "lifestyle + space + schools + community" },
+      { "id": "retiree", "signals": ["retire", "retirement", "55+", "quiet", "peaceful"], "pitch": "community + services + healthcare access + climate" },
+      { "id": "expat", "signals": ["moving from", "abroad", "residency", "visa", "foreign", "overseas"], "pitch": "residency process + title clarity + tax + legal" },
+      { "id": "generic", "signals": [], "pitch": "broad features then ask for qualifying details" }
+    ]
+  },
+  "explain_in_notes": true,
+  "max_score": 100
+}

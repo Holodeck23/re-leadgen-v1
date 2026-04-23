@@ -1,94 +1,155 @@
 {
+  "version": 2,
+  "description": "Milestone-triggered nurture sequences. Sequences run by tier (hot/nurture/long_cycle from scoring-model.json). Each step has a calendar fallback (max_wait_days) and one or more event triggers. Triggers fire the step early when the event occurs; calendar fires if no trigger hit by max_wait_days.",
   "sequences": {
-    "hot_lead": {
-      "description": "Score 8-10. Fast, direct, get them on a call.",
+    "hot": {
+      "description": "Score >=70. Fast, direct, WhatsApp-first, get them on a call.",
       "steps": [
         {
-          "day": 0,
-          "channel": "phone",
-          "action": "Call immediately. If no answer, leave voicemail + WhatsApp."
-        },
-        {
-          "day": 0,
-          "channel": "email",
-          "action": "Send property package with personalized note referencing their interest."
-        },
-        {
-          "day": 1,
+          "id": "hot_01_whatsapp_intro",
           "channel": "whatsapp",
-          "action": "Short follow-up: 'Sent you the property details yesterday — any questions I can answer?'"
+          "max_wait_hours": 2,
+          "triggers": [{ "type": "on_score", "condition": "score >= 70" }],
+          "action": "First-contact WhatsApp referencing one specific form field. See follow-up skill."
         },
         {
-          "day": 3,
-          "channel": "email",
-          "action": "Share one specific detail that matches their interest (lot availability, ROI projection, etc.)"
-        },
-        {
-          "day": 7,
+          "id": "hot_02_call",
           "channel": "phone",
-          "action": "Second call attempt. If no response after this, move to warm sequence."
+          "max_wait_hours": 4,
+          "triggers": [{ "type": "on_reply", "condition": "any" }, { "type": "after_step", "condition": "hot_01_whatsapp_intro" }],
+          "action": "Human sales call. If voicemail: leave 20s message + WhatsApp follow."
+        },
+        {
+          "id": "hot_03_email_package",
+          "channel": "email",
+          "max_wait_hours": 24,
+          "triggers": [{ "type": "after_step", "condition": "hot_02_call" }],
+          "action": "Send segment-matched brochure + lot map + call-booking link. Subject specific."
+        },
+        {
+          "id": "hot_04_event_drop",
+          "channel": "whatsapp",
+          "max_wait_days": 3,
+          "triggers": [
+            { "type": "milestone", "condition": "new_drone_footage_published" },
+            { "type": "milestone", "condition": "lot_sold_in_same_phase" },
+            { "type": "milestone", "condition": "price_change_announced" }
+          ],
+          "action": "Send the milestone artifact with one line connecting it to their stated interest."
+        },
+        {
+          "id": "hot_05_second_call",
+          "channel": "phone",
+          "max_wait_days": 7,
+          "triggers": [{ "type": "after_step", "condition": "hot_04_event_drop" }],
+          "action": "Second call attempt. If still no response, downgrade to nurture and start nurture_01."
         }
       ]
     },
-    "warm_lead": {
-      "description": "Score 5-7. Nurture with value, don't push.",
+    "nurture": {
+      "description": "Score 40-69. Value-led, email-first, milestone-triggered.",
       "steps": [
         {
-          "day": 0,
+          "id": "nurture_01_email_intro",
           "channel": "email",
-          "action": "Send property package with brief personalized intro."
+          "max_wait_hours": 24,
+          "triggers": [{ "type": "on_score", "condition": "score >= 40 AND score < 70" }],
+          "action": "Segment-matched intro with one proof point + brochure link. Subject specific. Offer a 15-min call."
         },
         {
-          "day": 3,
+          "id": "nurture_02_milestone_update",
           "channel": "email",
-          "action": "Share a relevant update: new drone footage, infrastructure progress, lots sold this week."
+          "max_wait_days": 7,
+          "triggers": [
+            { "type": "milestone", "condition": "construction_progress_photo" },
+            { "type": "milestone", "condition": "new_drone_footage_published" },
+            { "type": "milestone", "condition": "infrastructure_milestone" }
+          ],
+          "action": "Share the artifact. 3-sentence email max. No CTA pressure, just the update."
         },
         {
-          "day": 7,
+          "id": "nurture_03_whatsapp_touch",
           "channel": "whatsapp",
-          "action": "Light touch: 'Hi [name], just checking if you had a chance to look at the property info?'"
+          "max_wait_days": 10,
+          "triggers": [{ "type": "after_step", "condition": "nurture_02_milestone_update" }],
+          "action": "One sentence check-in referencing a previous email. One specific question."
         },
         {
-          "day": 14,
+          "id": "nurture_04_inventory_nudge",
           "channel": "email",
-          "action": "Inventory update: how many lots remain, any price changes."
+          "max_wait_days": 18,
+          "triggers": [
+            { "type": "milestone", "condition": "inventory_changed" },
+            { "type": "milestone", "condition": "lot_sold_in_same_phase" }
+          ],
+          "action": "Inventory update. Mention lots/units remaining, any price movement, investor interest level."
         },
         {
-          "day": 21,
+          "id": "nurture_05_social_proof",
           "channel": "email",
-          "action": "Social proof: mention number of inquiries, lots reserved, investor interest."
+          "max_wait_days": 25,
+          "triggers": [{ "type": "milestone", "condition": "testimonial_or_review_added" }, { "type": "after_step", "condition": "nurture_04_inventory_nudge" }],
+          "action": "Share a new testimonial or recent buyer quote. One paragraph only."
         },
         {
-          "day": 30,
-          "channel": "email",
-          "action": "Final check-in. Low pressure. 'No rush — just wanted to make sure you have everything you need.'"
+          "id": "nurture_06_final_check",
+          "channel": "whatsapp",
+          "max_wait_days": 35,
+          "triggers": [{ "type": "after_step", "condition": "nurture_05_social_proof" }],
+          "action": "Low-pressure close or park. If no engagement, downgrade to long_cycle."
         }
       ]
     },
-    "cool_lead": {
-      "description": "Score 3-4. Newsletter-style drip. Very light.",
+    "long_cycle": {
+      "description": "Score <40 or 12-24 month decision cycle buyers. Evergreen drip, new-information-triggered.",
       "steps": [
         {
-          "day": 0,
+          "id": "long_01_welcome",
           "channel": "email",
-          "action": "Thank them for their interest. Send a brief overview, not the full package."
+          "max_wait_hours": 48,
+          "triggers": [{ "type": "on_score", "condition": "score < 40" }],
+          "action": "Light welcome. Overview, not full package. Set expectation: 'I'll send updates as the project progresses.'"
         },
         {
-          "day": 14,
+          "id": "long_02_monthly_progress",
           "channel": "email",
-          "action": "Development update: progress, timeline, community news."
+          "max_wait_days": 30,
+          "triggers": [
+            { "type": "milestone", "condition": "construction_progress_photo" },
+            { "type": "milestone", "condition": "new_drone_footage_published" }
+          ],
+          "action": "Monthly construction progress email. One visual + two sentences. No CTA."
         },
         {
-          "day": 30,
+          "id": "long_03_market_report",
           "channel": "email",
-          "action": "Market context: why this area, appreciation trends, investment case."
+          "max_wait_days": 60,
+          "triggers": [{ "type": "milestone", "condition": "market_data_quarterly" }],
+          "action": "Quarterly market context. Comparable sales in area, appreciation trend, regulatory notes."
         },
         {
-          "day": 60,
+          "id": "long_04_reengagement",
           "channel": "email",
-          "action": "Re-engagement: 'Still thinking about [location]? Here's what's changed since we last talked.'"
+          "max_wait_days": 90,
+          "triggers": [{ "type": "milestone", "condition": "price_change_announced" }, { "type": "milestone", "condition": "phase_completion" }],
+          "action": "'Something material just changed.' Re-engagement triggered by a real event, never calendar-based fake urgency."
         }
       ]
     }
+  },
+  "milestones": {
+    "description": "Event types that can fire nurture steps. The nurture-orchestrator skill watches for these and advances sequences.",
+    "types": [
+      "new_drone_footage_published",
+      "construction_progress_photo",
+      "infrastructure_milestone",
+      "lot_sold_in_same_phase",
+      "inventory_changed",
+      "price_change_announced",
+      "testimonial_or_review_added",
+      "market_data_quarterly",
+      "phase_completion",
+      "media_mention"
+    ]
   }
 }
