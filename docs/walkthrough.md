@@ -204,7 +204,10 @@ Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides t
 
 ### `scripts/`
 
-- **`sheet-ops.py`** — the only thing that talks to the Google Sheet. Commands: `new`, `all`, `due`, `export`, `quality-by-adset`, `import-scores`. Uses `batch_update` for writes (one API call per batch).
+- **`onboard.sh`** — interactive setup wizard. Walks a new user through every step: property data, Google credentials, sheet creation, Apps Script, Meta Pixel, env vars. Runs preflight at the end. Idempotent — skips steps already completed.
+- **`preflight.sh`** — pre-launch validation. Checks all 16 prerequisites and prints pass/fail with exact fix instructions. Run this before going live and after any config change.
+- **`create-sheet.py`** — creates a Google Sheet with the correct 13-column schema, data validation dropdowns (status, interest), conditional formatting (hot leads highlighted green, duplicates greyed out), and column widths. Shares with the user's email. Used by `onboard.sh` or standalone.
+- **`sheet-ops.py`** — the only thing that talks to the Google Sheet at runtime. Commands: `new`, `all`, `due`, `export`, `quality-by-adset`, `import-scores`. Uses `batch_update` for writes (one API call per batch).
 - **`meta-insights.py`** — standalone Meta Graph API client for when cron runs don't have the MCP. Pulls four timeframes (today / yesterday / 7d / lifetime), derives hook rate and CPL. Used as a fallback; the normal path is the Pipeboard MCP inside a Claude session.
 - **`loop-runner.sh`** — entrypoint for cron. Preflights, reads the budget cap, invokes `claude --print --agent reflective-operator`.
 
