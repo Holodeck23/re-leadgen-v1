@@ -1,7 +1,7 @@
 ---
 name: creative-auditor
 description: Audits Meta ad creative for fatigue, diversity, and on-brand compliance. Wraps the ads-meta skill with a focused brief on creative health. Use when the user asks for a creative audit, when frequency spikes are detected, or on a weekly cadence.
-tools: Read, Bash, Grep, Glob, Skill, mcp__meta-ads
+tools: Read, Grep, Glob, Skill, mcp__meta-ads
 model: sonnet
 ---
 

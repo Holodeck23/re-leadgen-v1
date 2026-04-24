@@ -61,5 +61,12 @@
       "min_winning_adsets": 2,
       "winning_criteria": "CPL < target AND avg_lead_score >= min_avg_lead_score_for_scale_up AND 3+ consecutive profitable days"
     }
+  },
+  "security_rules": {
+    "escalate_if_suspicious_spike": {
+      "leads_per_adset_per_day_limit": 50,
+      "qualified_rate_drop_threshold": 0.5,
+      "note": "Prevent data poisoning/budget hijacking. If an ad set suddenly generates >50 leads/day OR qualified rate drops by 50% vs 7d avg, escalate all actions for that ad set to manual approval."
+    }
   }
 }
