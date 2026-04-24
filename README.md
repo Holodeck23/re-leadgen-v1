@@ -29,14 +29,16 @@ No app to deploy, no server to maintain, no database to migrate. The stack: a st
 
 ## Quick start
 
-1. `git submodule update --init --recursive`
-2. Fill in `data/property.json` with real listing details
-3. Set up Google Sheet + Apps Script (`docs/setup.md` §3-4)
-4. Deploy `site/` to any static host
-5. Connect Meta Ads MCP via Pipeboard (config in `.mcp.json`)
-6. `./scripts/loop-runner.sh dry_run`
+```bash
+git clone <this-repo-url> re-leadgen-v1
+cd re-leadgen-v1
+git submodule update --init --recursive
+./scripts/onboard.sh
+```
 
-Full setup: `docs/setup.md`. Full tour: `docs/walkthrough.md`.
+The onboarding wizard walks you through everything: property details, Google Sheets, Apps Script, Meta Pixel, environment variables. It creates your CRM sheet automatically and validates every step.
+
+Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrough.md` has the architecture tour.
 
 ## Project structure
 
@@ -71,6 +73,9 @@ Full setup: `docs/setup.md`. Full tour: `docs/walkthrough.md`.
 │   ├── lead-scorer.md               # Batch scoring agent (haiku)
 │   └── creative-auditor.md          # On-demand creative audit (sonnet)
 ├── scripts/
+│   ├── onboard.sh                   # Interactive setup wizard
+│   ├── preflight.sh                 # Pre-launch validation
+│   ├── create-sheet.py              # Auto-create configured CRM sheet
 │   ├── loop-runner.sh               # Cron entrypoint
 │   ├── sheet-ops.py                 # Google Sheets CLI
 │   └── meta-insights.py             # Meta Graph API fallback

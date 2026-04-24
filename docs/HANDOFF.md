@@ -6,6 +6,16 @@ This system runs your Meta (Facebook + Instagram) ads, scores every lead automat
 
 **Time to go live:** ~2 hours if your property content is ready. ~1 day if you're writing it from scratch.
 
+## Fastest path: the setup wizard
+
+```bash
+./scripts/onboard.sh
+```
+
+This walks you through every step interactively — fills in your `.env`, creates the Google Sheet automatically, configures your landing page, and runs the preflight check at the end. If you get interrupted, run it again and it picks up where you left off.
+
+If you prefer doing it manually, follow the steps below.
+
 ## What you need before starting
 
 - A **Google account** (for the lead spreadsheet)
@@ -51,6 +61,13 @@ python3 -c "import json; d=json.load(open('data/property.json')); assert 'UPDATE
 
 ## Step 3: Set up the lead spreadsheet
 
+**Automatic (recommended):**
+```bash
+python scripts/create-sheet.py --email you@example.com
+```
+This creates a fully configured sheet with headers, column widths, data validation dropdowns (status, interest), conditional formatting (hot leads highlighted, duplicates greyed out), and shares it with your email. It prints the `LEAD_SHEET_ID` to add to your `.env`.
+
+**Manual alternative:**
 1. Create a new Google Sheet
 2. Set Row 1 headers (exact order, lowercase):
    ```
