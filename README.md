@@ -6,6 +6,7 @@ Built for a live deal (89 development lots + residential complex, profit-share s
 
 ## What it does
 
+- Launches campaigns from scratch — zero ads experience required (audience research, creative generation, campaign structure, go-live)
 - Runs a daily reflective loop: analyze ad performance, score leads, auto-execute safe actions, escalate the rest
 - Scores leads on a 0-100 BANT + behavioral + property-fit rubric with two-phase tiering (initial intent-based SLA, post-contact full rubric)
 - Drafts segment-aware follow-ups (WhatsApp-first for hot leads, email for artefacts)
@@ -49,18 +50,21 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 ├── data/
 │   ├── property.json                # Listing details (single source of truth)
 │   ├── scoring-model.json           # BANT + behavioral scoring rubric
-│   ├── kill-scale-rules.json        # Pause/scale/refresh thresholds
+│   ├── kill-scale-rules.json        # Pause/scale/refresh thresholds + learning phase
+│   ├── launch-config.json           # Created at launch — campaigns + learning phase state
 │   ├── nurture-sequences.json       # Milestone-triggered nurture sequences
 │   ├── creative-library.jsonl       # Pre-approved ad variants
 │   └── ad-history.jsonl             # Append-only decision log
 ├── skills/
+│   ├── campaign-launch/             # Zero-to-live: 9-step campaign creation
+│   ├── audience-research/           # Build targeting from property data
 │   ├── reflective-ops/              # Daily analyze → iterate → execute loop
 │   ├── lead-qualifier/              # Score leads 0-100, assign tier + segment
 │   ├── follow-up/                   # Draft WhatsApp + email by segment
 │   ├── nurture-orchestrator/        # Advance leads through sequences
 │   ├── property-context/            # Load property.json + anti-slop rules
-│   ├── ad-creative/                 # Generate Meta ad variants
-│   ├── paid-ads/                    # Campaign lifecycle (Meta-only)
+│   ├── ad-creative/                 # Generate Meta ad variants (6 hook types)
+│   ├── paid-ads/                    # Campaign lifecycle (Meta-only, Housing)
 │   ├── ads-meta/                    # Creative fatigue + Pixel health audit
 │   ├── unicorn-promoter/            # Promote organic outliers
 │   ├── analytics-tracking/          # Pixel + CAPI + UTM instrumentation
@@ -69,6 +73,7 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 │   ├── form-cro/                    # Form optimization
 │   └── ads-generate/                # Image generation
 ├── agents/
+│   ├── campaign-launcher.md         # Zero-to-live campaign agent (sonnet)
 │   ├── reflective-operator.md       # Daily loop agent (sonnet)
 │   ├── lead-scorer.md               # Batch scoring agent (haiku)
 │   └── creative-auditor.md          # On-demand creative audit (sonnet)
@@ -104,6 +109,8 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 - **Lead-quality gate**: never scales an ad set whose 14-day avg lead score is below threshold
 - **Daily budget cap**: hard stop, enforced at preflight
 - **Approval gates**: new campaigns, audience expansion, targeting changes always escalate
+- **Learning-phase protection**: first 14 days / 50 Lead events — restricts to pause/hold only so Meta's algorithm can optimize
+- **Housing compliance**: Special Ad Category enforced on every campaign (ages 18–65+, all genders, no ZIP, 15-mile min radius)
 
 ## Requirements
 
@@ -126,5 +133,5 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 
 1. Update `data/property.json`
 2. Refresh the Meta Pixel ID in `site/` files
-3. Generate new creative variants via the `ad-creative` skill
+3. Open Claude Code and say "Launch my campaigns" — the campaign launcher handles audience research, creative generation, campaign structure, and go-live
 4. Everything else adapts — skills read from property.json
