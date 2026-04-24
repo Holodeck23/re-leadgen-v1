@@ -15,6 +15,7 @@ metadata:
 - `data/property.json` via `property-context` skill — all copy and claims reference it.
 - `data/kill-scale-rules.json` — every pause / scale / refresh decision uses these thresholds. Do not invent your own.
 - `data/scoring-model.json` — lead quality is the gating signal; never scale an ad set whose leads average score <5.
+- `data/creative-library.jsonl` — pre-approved ad variants (one JSON object per line). `refresh_variant` and `launch_variant` actions pull from this file. Each entry has: `id, format, segment, headline, primary_text, image_ref, status` (approved|deployed|retired). If empty, creative refresh escalates to human.
 
 **Budget discipline:**
 - Never exceed `targets.daily_budget_cap_usd`. If a proposed change would land within `cap_headroom_pct` of cap, escalate to human approval.

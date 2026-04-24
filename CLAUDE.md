@@ -18,7 +18,8 @@ Authenticate via Pipeboard token. If auth fails, tell the user to refresh at htt
 
 - **`data/property.json`** — every lead-facing fact (prices, inventory, location, amenities, media, contact). Never invent. Blocked from go-live until all `UPDATE` placeholders are replaced.
 - **`data/kill-scale-rules.json`** — pause/scale/refresh thresholds, auto-approval list, statistical guardrails. Read by `reflective-ops`, `paid-ads`, `ads-meta`. Edit deliberately.
-- **`data/scoring-model.json`** — BANT + behavioural + property-fit weights. Read by `lead-qualifier`. Tune weekly.
+- **`data/scoring-model.json`** — BANT + behavioural + property-fit weights. Read by `lead-qualifier`. Tune weekly. Includes `initial_phase` config (Strategy B): first-submission leads get tier overrides based on intent + phone, while full-rubric score is computed for the quality gate.
+- **`data/creative-library.jsonl`** — pre-approved ad creative variants (one JSON object per line). Read by `reflective-ops` for `refresh_creative` and `launch_variant`. Each line: `{id, format, segment, headline, primary_text, image_ref, status}`. Empty until populated via `ad-creative` skill.
 - **`data/nurture-sequences.json`** — tier-matched sequences, milestone-triggered. Read by `nurture-orchestrator`.
 - **`data/ad-history.jsonl`** — append-only decision log. Read by `reflective-ops` to recover context each run.
 

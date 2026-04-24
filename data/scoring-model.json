@@ -93,6 +93,38 @@
       { "id": "generic", "signals": [], "pitch": "broad features then ask for qualifying details" }
     ]
   },
+  "initial_phase": {
+    "description": "Strategy B: intent-only tiering for first submission. The landing form collects only name, phone, interest — no budget, timeline, or message body. First-submission scoring ceiling is ~40 under the full rubric, which misclassifies hot buyers. Initial phase uses interest + phone presence to assign a contact-SLA tier independently of the score. The full-rubric score is still computed and stored for the quality gate (scaling decisions). Post-contact rescoring uses the full rubric with data gathered during outreach.",
+    "enabled": true,
+    "phase_field": "phase",
+    "phases": {
+      "initial": {
+        "description": "First form submission. Tier is determined by intent signals, not score. Score is still computed for quality-gate purposes.",
+        "tier_overrides": {
+          "hot_if": {
+            "interest_in": ["lot", "unit", "investment", "specific lot", "buy", "purchase", "ready"],
+            "phone_provided": true,
+            "override_tier": "hot",
+            "override_sla_hours": 2,
+            "note": "Initial-phase hot: high-intent interest + phone provided. Full score deferred to post-contact."
+          },
+          "nurture_if": {
+            "interest_in": ["information", "info", "learn more", "curious", "exploring", "general"],
+            "phone_provided": true,
+            "override_tier": "nurture",
+            "override_sla_hours": 24,
+            "note": "Initial-phase nurture: exploratory interest but reachable by phone."
+          }
+        },
+        "fallback_tier": "long_cycle",
+        "fallback_note": "Initial-phase long-cycle: no strong intent signal or no phone."
+      },
+      "post_contact": {
+        "description": "After first outreach. Use full BANT + behavioral rubric with data gathered during contact.",
+        "use_full_rubric": true
+      }
+    }
+  },
   "explain_in_notes": true,
   "max_score": 100
 }
