@@ -37,6 +37,8 @@ The briefing is ordered so the top line is the thing that might need you *right 
 | Briefing says loop couldn't reach Meta | Check `/mcp` in a Claude session; refresh Pipeboard token if needed. Loop will retry next cycle. |
 | Sheet quota error | Google Sheets API quota is 60 req/min per user. The script uses `batch_update` to stay under; if you see a burst, wait 60s and rerun. |
 | Budget cap breach imminent | Loop bails into `emergency_brake` mode automatically when within `cap_headroom_pct` (10%) of `daily_budget_cap_usd`. All auto-execution stops; you get a one-line escalation. Raise the cap (with intent) or pause the worst offender. |
+| **SUSPICIOUS SPIKE detected** | Data poisoning/hijacking protection triggered (>50 leads/day). The loop has disabled auto-execution for that ad set. Audit the sheet for bot submissions. If clean, resume; if fake, pause the ad set and refresh keys. |
+| **QUALITY DROP detected** | Lead quality fell 50% vs 7d average. The loop has escalated scale-up decisions. Audit the latest leads to see if the angle is attracting junk or if it's a bot attack. |
 
 ## The lead-quality gate (don't disable it)
 
