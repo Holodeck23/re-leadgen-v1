@@ -275,7 +275,15 @@ All real estate ads on Meta must declare `special_ad_categories: ["HOUSING"]`. T
 
 This requirement is enforced in `audience-research`, `campaign-launch`, and `paid-ads` skills.
 
-All four guardrails are edited by changing a JSON file and committing with intent — they cannot be monkey-patched mid-run.
+### 5. Security & Safety Guardrails
+
+To prevent the AI from being manipulated by external actors:
+
+- **RCE Mitigation:** Scoring and Auditing agents are restricted from using the `Bash` tool. They cannot execute arbitrary commands.
+- **Prompt Injection Defense:** Lead data is strictly encapsulated in XML tags. AI skills are instructed to ignore any instructions found within lead fields (e.g., "SYSTEM OVERRIDE").
+- **Data Poisoning Defense:** The loop monitors for bot-like activity (sudden volume spikes or quality drops). If detected, it freezes auto-execution for the affected ad set and escalates for human audit.
+
+All five guardrails are edited by changing a JSON file and committing with intent — they cannot be monkey-patched mid-run.
 
 ## How you interact with the system day-to-day
 

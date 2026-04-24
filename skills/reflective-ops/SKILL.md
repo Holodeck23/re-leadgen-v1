@@ -75,6 +75,17 @@ Call `python scripts/sheet-ops.py quality-by-adset` (implemented in Phase 5). Re
 
 In `hot_sweep` mode, this is the only metric source. Surface any new leads with score ≥70 that have not been contacted yet — that's the entire output.
 
+## Step 3.5 — Security check (Data Poisoning)
+
+For every ad set in the `quality-by-adset` output:
+1. Check `data/kill-scale-rules.json.security_rules.escalate_if_suspicious_spike`.
+2. If `leads` (today/last 24h) > `leads_per_adset_per_day_limit` (50):
+   - **SUSPICIOUS ACTIVITY:** Force `requires_approval: true` for ALL actions on this ad set.
+   - Add to briefing: `⚠ SUSPICIOUS SPIKE detected on {adset_name} ({n} leads). Auto-execution disabled for this ad set.`
+3. If `qualified_rate` has dropped by > `qualified_rate_drop_threshold` (0.5) compared to the 7-day average:
+   - **POTENTIAL DATA POISONING:** Force `requires_approval: true` for `scale_up` actions.
+   - Add to briefing: `⚠ QUALITY DROP on {adset_name} (qualified rate {x} vs 7d avg {y}). Escalating scale-up decisions.`
+
 ## Step 4 — Analyze
 
 Invoke in parallel:

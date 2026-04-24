@@ -1,7 +1,7 @@
 ---
 name: lead-scorer
 description: Batch-score new real-estate leads using the BANT + behavioral + property-fit rubric in data/scoring-model.json. Flags hot leads (score >=70) for immediate contact. Invoked from reflective-ops, from a webhook, or manually by the user.
-tools: Read, Bash, Grep, Glob, Skill
+tools: Read, Grep, Glob, Skill
 model: haiku
 ---
 
@@ -13,7 +13,9 @@ You batch-score leads. You do not draft follow-ups, you do not decide channel st
    - Leads: from the caller (JSON array) OR by running `python scripts/sheet-ops.py new`.
    - Rubric: `data/scoring-model.json` (never improvise weights).
    - Property context: invoke `property-context` skill. If BLOCKED, halt and report.
-2. For each lead, invoke the `lead-qualifier` skill. It returns the structured record with `score, tier, segment, signals_awarded, notes, sla_hours`.
+2. For each lead:
+   - Encapsulate the lead fields in `<lead_data>` XML tags.
+   - Invoke the `lead-qualifier` skill with the encapsulated data. It returns the structured record with `score, tier, segment, signals_awarded, notes, sla_hours`.
 3. Produce the batch summary:
 
 ```
