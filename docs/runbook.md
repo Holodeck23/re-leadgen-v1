@@ -124,7 +124,8 @@ Meta's algorithm needs about 14 days and 50 Lead events to optimize delivery. Du
 2. Skim the morning briefings — which escalations did you approve? Were they right?
 3. Check `quality-by-adset` over 14d — any ad set gaming the CPL metric with junk?
 4. Check `unicorn-promoter` output — is organic content producing outliers? If not, the angle is stale.
-5. Update `data/kill-scale-rules.json` if a threshold feels wrong. Commit with intent, short rationale in the message.
+5. Quick Ad Library scan (5 min) — search your market for new competitor ads. Paste anything interesting into a Claude session and say "analyze these competitor ads" to run the `competitive-intel` skill. Long-running competitor ads that match angles you haven't tested = creative opportunity.
+6. Update `data/kill-scale-rules.json` if a threshold feels wrong. Commit with intent, short rationale in the message.
 
 ## Monthly review (60 minutes, first of the month)
 

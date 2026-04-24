@@ -93,6 +93,18 @@ Wait for approval before proceeding.
 
 ### Step 4 — Generate launch creative
 
+**Optional but recommended: competitive research first.**
+
+Ask the user: "Want to check what competitors are running before we generate ads? It takes 5 minutes and helps us avoid angles that are oversaturated and find patterns that are proven to work."
+
+If yes, invoke `competitive-intel` skill:
+1. Guide the user to the Meta Ad Library with search terms relevant to their property/market
+2. Analyze whatever they paste back (ad copy, screenshots, URLs)
+3. Produce a pattern report and 3–6 inspiration seeds
+4. Use the seeds to inform the creative generation below
+
+If no or if the user wants to move fast, proceed directly with `ad-creative`.
+
 Invoke `ad-creative` skill in "from scratch" mode with these enhancements:
 
 **Hook categories (at least one ad per category):**
@@ -337,6 +349,7 @@ If the process fails at any step:
 ## Related skills
 
 - `audience-research` — called in Step 3 for targeting
+- `competitive-intel` — optionally called before Step 4 to research competitor patterns and seed creative
 - `ad-creative` — called in Step 4 for creative generation
 - `ads-meta` — called in Step 2 for Pixel health check
 - `paid-ads` — manages campaigns post-launch

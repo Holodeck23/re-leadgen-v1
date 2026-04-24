@@ -194,6 +194,7 @@ The skill set splits into three layers:
 
 **Vendored + patched (from `vendor/marketingskills` and `vendor/claude-ads`):**
 - `ad-creative/` — generate-mode and iterate-from-performance mode; produces 6 Meta variants (2 Feed, 2 Reels, 1 Carousel, 1 Retargeting). Enhanced with 6 psychological hook categories: curiosity gap, social proof, specificity, loss aversion, identity, and pattern interrupt.
+- `competitive-intel/` — analyze competitor ads from the public Meta Ad Library. Classifies each ad by hook type, angle, segment, format, and longevity. Produces pattern reports (hook/angle/visual distributions) and inspiration seeds (adapted to your property data, never copied). Feeds into `ad-creative`. Recommended cadence: before first launch (seed initial creative), weekly during Friday review.
 - `paid-ads/` — Meta-only, `OUTCOME_LEADS` objective, daily-budget cap hard stop. Housing Special Ad Category mandatory on every campaign.
 - `analytics-tracking/` — Pixel + CAPI priorities, UTM capture, quality-by-adset query.
 - `ab-test-setup/` — hypothesis format (IF/THEN/BECAUSE/REVISIT), 1000-impression / 10-lead / $50-spend minimums.

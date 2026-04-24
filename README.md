@@ -64,6 +64,7 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 │   ├── nurture-orchestrator/        # Advance leads through sequences
 │   ├── property-context/            # Load property.json + anti-slop rules
 │   ├── ad-creative/                 # Generate Meta ad variants (6 hook types)
+│   ├── competitive-intel/           # Analyze competitor ads → inspiration seeds
 │   ├── paid-ads/                    # Campaign lifecycle (Meta-only, Housing)
 │   ├── ads-meta/                    # Creative fatigue + Pixel health audit
 │   ├── unicorn-promoter/            # Promote organic outliers
