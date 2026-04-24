@@ -33,6 +33,12 @@ When iterating from performance data, identify which hook categories are winning
 - Each variation must state: segment id, hook category, hook, angle, offer, primary text (≤125 chars), headline (≤40 chars), description (≤30 chars), CTA.
 - Write approved variants to `data/creative-library.jsonl` (one JSON per line, `status: "approved"`).
 
+**Visual Diversity Guardrail (Anti-Andromeda Suppression):**
+- Meta's Andromeda engine suppresses creatives with >60% visual similarity.
+- **Batches must be diverse**: Every set of 6 variants MUST include at least 3 distinct visual concepts (e.g., Drone shot vs. Interior render vs. Lifestyle photo).
+- **Format mixing is mandatory**: Do not generate 6 static images. A standard batch is 2 Statics, 2 Reels (Video), 1 Carousel.
+- When iterating, if a "Drone Shot" concept is winning, do not just swap the headline. Change the format (e.g., turn the drone shot into a Video or a Carousel of drone stills).
+
 **Anti-slop rules (from CLAUDE.md — non-negotiable):**
 - Never use: "nestled in", "boasts", "stunning", "hidden gem", "paradise awaits", em-dashes, any filler real-estate adjective.
 - First-person, concrete, specific. Reference a real number, lot size, or amenity from property-context.

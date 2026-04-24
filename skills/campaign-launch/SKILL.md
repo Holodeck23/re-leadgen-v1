@@ -20,6 +20,14 @@ If any prerequisite fails, print exactly what's missing and how to fix it. Do no
 
 ## The 9-step sequence
 
+### Step 0 — State Alignment & Duplicate Prevention
+
+Before starting the research/structure phase:
+1. Query Meta Ads MCP for any existing campaigns, ad sets, or ads containing the tag `managed_by: re-leadgen-v1` or the property name from `property.json`.
+2. If found, and `data/launch-config.json` is missing or incomplete, attempt to reconstruct the local state from the Meta API.
+3. If `launch-config.json` exists, confirm that the campaign/ad-set IDs in the file match the active IDs in Meta. 
+4. If a mismatch or unexpected duplicate is found, HALT and escalate to the user: "Existing campaigns found in Meta that are not in local config. Resolve conflict before proceeding."
+
 ### Step 1 — Validate property data completeness
 
 Read `data/property.json` and check every required field:
@@ -222,6 +230,7 @@ Execute via Pipeboard MCP tools:
    - `special_ad_categories: ["HOUSING"]`
    - `objective: "OUTCOME_LEADS"`
    - `status: "PAUSED"` (launch paused, review first)
+   - `tags: ["managed_by: re-leadgen-v1"]` (mandatory for state alignment)
 
 2. Create ad sets with `mcp__meta-ads__create_adset`:
    - Targeting from audience-research output

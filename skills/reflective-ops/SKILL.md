@@ -208,8 +208,9 @@ RECOMMENDED NEXT ACTION
 2. **Never scale an ad set with avg lead score <5.** Even if CPL is amazing — it's cheap junk.
 3. **Never auto-approve `new_campaign` or `expand_audience`.**
 4. **Every decision must have a hypothesis, confidence, and revisit_trigger.** A decision without them is malformed — fix it before executing.
-5. **Git-commit or don't execute.** If you cannot git-commit (e.g., auth error, merge conflict), halt execution and escalate the full queue.
-6. **Stale rules.** If `data/kill-scale-rules.json` or `data/scoring-model.json` has not been reviewed in 30+ days, add a briefing note recommending review (rules can rot).
+5. **No PII in logs.** Never write lead names, phones, or emails to `data/ad-history.jsonl` or git commits. Reference only `lead_id` or `adset_id`.
+6. **Git-commit or don't execute.** If you cannot git-commit (e.g., auth error, merge conflict), halt execution and escalate the full queue.
+7. **Stale rules.** If `data/kill-scale-rules.json` or `data/scoring-model.json` has not been reviewed in 30+ days, add a briefing note recommending review (rules can rot).
 
 ## When things are ambiguous
 
