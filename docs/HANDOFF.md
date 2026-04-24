@@ -1,157 +1,164 @@
-# Handoff — re-leadgen-v1
+# Getting Started
 
 _Last updated: 2026-04-24_
 
-If you just opened this repo (human or fresh Claude session), read this first. It tells you what's built, what's broken, what to do next, and in what order.
+This system runs your Meta (Facebook + Instagram) ads, scores every lead automatically, drafts follow-up messages, and gives you a daily briefing. You handle sales calls and closing. The system handles everything else.
 
-For the full tour, read `docs/walkthrough.md` once. For day-to-day ops, read `docs/runbook.md` before acting on any escalation. This file is the punch list.
+**Time to go live:** ~2 hours if your property content is ready. ~1 day if you're writing it from scratch.
 
-## What's on `main`
+## What you need before starting
 
-Commit `2a3819a`: a daily autonomous Meta-ads + AI-lead-qualification loop.
+- A **Google account** (for the lead spreadsheet)
+- A **Meta Business account** with ad access
+- A **Pipeboard account** (free — https://pipeboard.co) for connecting Meta Ads
+- **Claude Code** installed (`npm install -g @anthropic-ai/claude-code`, then `claude login`)
+- **Python 3.10+** with pip
+- Somewhere to host a static page (Vercel, Netlify, or GitHub Pages)
 
-- Reflective-ops loop (analyze → iterate → execute) with lead-quality as the gating signal.
-- 14 skills: 6 patched from `marketingskills`, 2 from `claude-ads`, 6 written for this repo (`reflective-ops`, `lead-qualifier`, `follow-up`, `nurture-orchestrator`, `unicorn-promoter`, `property-context`).
-- 3 agents: `reflective-operator` (sonnet, daily loop), `lead-scorer` (haiku, batch), `creative-auditor` (sonnet, on-demand).
-- Landing page with Pixel + server-side CAPI (Lead + CompleteRegistration, hashed PII, event_id dedup). 3-field form. Thank-you page with progressive email + Calendly for hot interest.
-- Attribution: `adset_id={{adset.id}}` Meta URL macro captured end-to-end, survives campaign renames. UTM is fallback only.
-- Single sources of truth under `data/`: `property.json`, `scoring-model.json`, `kill-scale-rules.json`, `nurture-sequences.json`, `ad-history.jsonl`.
-
-## What's NOT done — go-live blockers
-
-Cannot drive a single paid click until all four are green.
-
-### 1. Populate `data/property.json` (hard blocker)
-
-Every `"UPDATE"` string must be replaced with real content. `property-context` returns `BLOCKED` otherwise, and every downstream skill halts.
+## Step 1: Clone and install
 
 ```bash
-# Verify:
+git clone <this-repo-url> re-leadgen-v1
+cd re-leadgen-v1
+git submodule update --init --recursive
+pip install gspread requests
+```
+
+## Step 2: Fill in your property details
+
+This is the most important step. Every ad, follow-up message, and landing page pulls from this one file.
+
+```bash
+cp data/property.example.json data/property.json
+```
+
+Open `data/property.json` and replace every field with your real property data. See `data/property.example.json` for what a completed file looks like.
+
+**Required fields:**
+- Project name, location (country, region, city, description)
+- Inventory (lot count, sizes, price ranges)
+- 3-5 concrete selling points (no filler — real facts with numbers)
+- Target audiences (at least investors + homebuyers, with hooks and budget ranges)
+- Amenities with distances
+- Timeline (current phase, expected completion)
+- Media URLs (photos, drone video, lot map, brochure)
+- Sales contact (name, email, phone, WhatsApp)
+
+**Check your work:**
+```bash
 python3 -c "import json; d=json.load(open('data/property.json')); assert 'UPDATE' not in json.dumps(d)"
 ```
 
-Minimum fields required before the sanity check passes: see `docs/setup.md` §2.
+## Step 3: Set up the lead spreadsheet
 
-### 2. ~~Fix two-phase lead scoring~~ DONE
+1. Create a new Google Sheet
+2. Set Row 1 headers (exact order, lowercase):
+   ```
+   timestamp | name | email | phone | interest | budget | timeline | message | source | score | status | notes | follow_up_date
+   ```
+3. Google Cloud Console → create a service account → download the JSON key
+4. Share the sheet with the service account email (Editor access)
 
-**Fixed (Strategy B).** `scoring-model.json` now has `initial_phase` config. `lead-qualifier` SKILL.md updated to read `phase: initial | post_contact`. Initial-phase leads get tier overrides based on intent keywords + phone presence (hot = "contact within 2h"), while the full-rubric score is still computed and stored for the quality gate. Post-contact rescoring uses the full BANT rubric.
+## Step 4: Set up the form handler (Apps Script)
 
-### 3. Seed the creative variant library (scaffolded, needs content)
+1. In the sheet: Extensions → Apps Script
+2. Paste the contents of `site/form-handler.gs`
+3. Set Script Properties:
+   - `META_PIXEL_ID` — your Pixel ID from Meta Events Manager
+   - `META_CAPI_TOKEN` — Conversions API token from Events Manager → Settings
+   - `META_TEST_EVENT_CODE` — optional, for testing (remove after go-live)
+4. Deploy → New deployment → Web app (Execute as: Me, Access: Anyone)
+5. Copy the `/exec` URL
 
-`data/creative-library.jsonl` now exists (empty). `reflective-ops` and `paid-ads` SKILLs updated to read it, handle the empty case (escalate instead of crash), and mark variants as deployed after use.
+## Step 5: Configure the landing page
 
-**Still needed:** populate with 6 approved variants once `data/property.json` has real content. Run:
+1. In `site/index.html` and `site/thank-you.html`:
+   - Replace `REPLACE_WITH_DEPLOYED_APPS_SCRIPT_URL` with your Apps Script URL
+   - Replace `PIXEL_ID` with your Meta Pixel ID
+2. Deploy `site/` to your hosting provider:
+   ```bash
+   cp data/property.json site/property.json
+   cd site && npx vercel --prod
+   ```
+
+## Step 6: Connect Meta Ads
+
+1. Sign up at https://pipeboard.co and link your Meta ad account
+2. Generate an API token
+3. The `.mcp.json` file is already configured — just verify:
+   ```bash
+   claude
+   > /mcp  # should show meta-ads connected
+   ```
+
+## Step 7: Set environment variables
+
+Copy `.env.example` to `.env` and fill in the values:
 ```bash
-claude > /skill ad-creative
-# Review outputs for anti-slop (no "nestled in", "boasts", etc.)
-# Each line in data/creative-library.jsonl:
-# {"id":"v01","format":"feed","segment":"investor","headline":"…","primary_text":"…","image_ref":"…","status":"approved"}
+cp .env.example .env
 ```
 
-### 4. Verify headless MCP + CAPI before cron
+Required:
+- `GOOGLE_SHEETS_KEY_FILE` — path to your service account JSON
+- `LEAD_SHEET_ID` — from the Google Sheet URL
+- `ANTHROPIC_API_KEY` — for the daily loop
 
-Two unverified integrations. Either can silently fail from cron.
+## Step 8: Run the preflight check
 
-**4a. Pipeboard MCP in non-interactive Claude.** The daily loop is `scripts/loop-runner.sh` → `claude --print --agent reflective-operator`. MCP auth behavior in headless `--print` mode isn't confirmed. Smoke test:
 ```bash
-./scripts/loop-runner.sh dry_run 2>&1 | tee /tmp/dryrun.log
-grep -E "(ERROR|BLOCKED|auth)" /tmp/dryrun.log  # must be empty
+./scripts/preflight.sh
 ```
-If MCP doesn't connect, `scripts/meta-insights.py` is the fallback — but that requires `META_ACCESS_TOKEN` (Meta Graph, not Pipeboard). Set both in env.
 
-**4b. CAPI event landing.** Submit one real form against the deployed Apps Script endpoint.
-- Meta Events Manager → Test Events panel → confirm `Lead` event arrives within 60s.
-- `event_id` must dedup with the client-side Pixel event (appears as single event, not two).
-- EMQ must land ≥ 8 (phone + external_id + user_agent + action_source=website).
-- If EMQ < 8: re-check SHA-256 hashing (trim + lowercase before hashing), confirm `META_PIXEL_ID` and `META_CAPI_TOKEN` Script Properties are set (see `docs/setup.md` §4).
+Fix any failures, then run it again until everything passes.
 
-## What's missing but not blocking launch
+## Step 9: Test the full loop
 
-Do these in weeks 2–4, after you have real data to work against.
+```bash
+# Dry run — analyzes but doesn't execute any ad changes
+./scripts/loop-runner.sh dry_run
+```
 
-### Deal-outcome pipeline (for eventual scoring-model tuning)
+Then submit a test form on your landing page and verify:
+- Row appears in the sheet within 5 seconds
+- `Lead` event appears in Meta Events Manager within 60 seconds
+- Delete the test row when done
 
-Sheet has `status=closed` as a value; nothing reads it. Scoring weights cannot improve over time until they can be correlated with real closes.
+## Step 10: Go live
 
-**Minimum viable (30 min):**
-- `scripts/close-deal.py <row> --value <usd> --notes "..."` sets `status=closed`, appends to `data/closed-deals.jsonl`.
-- No retraining yet — just start collecting the truth set. Do NOT auto-tune weights on fewer than 30 closed deals; live updating on small samples is noise amplification.
-- Monthly manual review: compute score-vs-close correlation on closed deals; if a feature weight is systematically misaligned, edit `scoring-model.json` deliberately.
-
-### Milestone event input (for nurture-orchestrator)
-
-`nurture-orchestrator` fires on milestones like `new_drone_footage_published`, `lot_sold_in_same_phase`, `price_change_announced`. There's no input path documented. Currently every "milestone-triggered" step is actually a calendar-fallback step.
-
-**Fix (2 h):**
-- `scripts/milestone.py add <type> [--notes "..."]` appends to `data/milestones.jsonl`.
-- `nurture-orchestrator` reads that file at run time; clears entries after they've fired once.
-
-### First-launch targeting override
-
-`paid-ads` SKILL says "start with Advantage+ audience." Advantage+ needs ~50 conversion events to converge. First 2 weeks with zero conversion history = Meta fires broad = lead-quality gate holds everything = the loop looks broken. Add to `docs/runbook.md`:
-
-> **First 2 weeks / first 50 conversion events:** do not use Advantage+ audience. Use interest + location constrained targeting (country + real-estate / investment interests + age 25–65). Switch to Advantage+ only after Meta has enough signal.
-
-### WhatsApp send integration
-
-`follow-up` drafts; nothing actually sends. The 2h hot-lead SLA is human-enforced. Fine for v1. When volume justifies it, integrate the WhatsApp Business API or a 3rd-party (Twilio for WhatsApp, Messagebird) — and keep the draft-approve-send gate for the first 30 days.
-
-### Real tests + CI
-
-`tests/fixtures/*` exists; there's no pytest suite or CI. Phase-6 verification was ad-hoc. Before v2, wire the fixtures into pytest and add a simple GitHub Actions workflow that runs on PRs.
-
-## First-day runbook (when you're ready to turn traffic on)
-
-1. Populate `data/property.json`. Run the placeholder-check. Commit.
-2. Fix two-phase scoring (pick strategy B above). Commit.
-3. Seed `data/creative-library.jsonl` with 6 approved variants. Commit.
-4. Set env vars (see `docs/setup.md` §7). Confirm `python scripts/sheet-ops.py new` returns `[]`.
-5. Set Apps Script Properties (`META_PIXEL_ID`, `META_CAPI_TOKEN`, optional `META_TEST_EVENT_CODE`, optional `HOT_LEAD_WEBHOOK_URL` + token). Redeploy the Web app.
-6. In Meta Ads Manager → every Ad → URL parameters:
+1. Set your ad URL parameters in Meta Ads Manager (every ad):
    ```
    adset_id={{adset.id}}&utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}
    ```
-7. Run `scripts/loop-runner.sh dry_run`. Resolve any error before cron.
-8. Submit a real form. Verify: row in sheet in ≤5s, `Lead` event in Events Manager with EMQ ≥ 8, `event_id` dedup clean. Delete the test row.
-9. Install cron (see `docs/setup.md` §8). First daily run should commit `ops: YYYY-MM-DD …` automatically.
-10. Launch 1–3 campaigns at small daily budget ($20–50/ad set). Watch the first briefing. Adjust thresholds in `kill-scale-rules.json` only after ≥50 real leads.
+2. Launch 1-3 campaigns at $20-50/day per ad set
+3. Install the daily loop:
+   ```bash
+   # Add to crontab (adjust path and timezone):
+   0 8 * * *              cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh >> ops.log 2>&1
+   0 9,11,13,15,17,19 * * * cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh hot_sweep >> ops.log 2>&1
+   ```
 
-## Weekly / monthly cadence
+## After go-live: your daily routine
 
-- **Friday 30 min:** `docs/runbook.md` → "Weekly review cadence."
-- **First-of-month 60 min:** `docs/runbook.md` → "Monthly review."
-- **Whenever you close a deal:** run the deal-outcome script (once built). Weekly, skim the score-vs-close pattern; don't retune until ≥30 closes.
+**Morning (2 minutes):** Read the briefing. Contact any hot leads within 2 hours. Approve or reject escalations.
 
-## Known speculative pieces
+**Friday (30 minutes):** Review the week's ad decisions. Check lead quality trends. Tune thresholds in `data/kill-scale-rules.json` if something looks off.
 
-Call these out because a fresh operator should know they're priors, not calibrations:
+**When you close a deal:** Tag the row in the sheet as `closed`. The system uses this to improve over time.
 
-- `scoring-model.json` weights: reasonable priors. Never tuned against real closes.
-- `kill-scale-rules.json` thresholds: industry-defensible, not account-specific.
-- `tiers.hot.min = 70`: a guess. Will need to move after 50+ real leads.
-- `min_avg_lead_score_for_scale_up = 5.0` (on 1–10 scale): a guess.
-- `audience_segments`: signal lists are a priori word-match. Will need refinement from real lead messages.
-- `nurture-sequences.json` max_wait_days / hours: guesses. Tune from reply-rate data.
-- Creative variant counts (6 per refresh): a guess. Probably fine.
+## Important: first 2 weeks
 
-Nothing in this file is load-bearing forever. The point of the repo is that the audit trail (`data/ad-history.jsonl` + git commits) lets you see what was decided and why, and refine.
+Don't use Meta's Advantage+ audience until you have ~50 conversion events. Start with interest + location targeting (country + real estate/investment interests + age 25-65). The system will tell you when to switch.
 
-## Contacts / where the bodies are buried
+## If something breaks
 
-- `vendor/claude-ads` pinned at `402ba63` (public OSS).
-- `vendor/marketingskills` pinned at `9125d82` (public OSS).
-- The RE-patched copies under `skills/` deliberately diverge — upstream bumps are a quarterly review task, not a blind pull.
-- The previous weak skills live under `skills-deprecated/` — kept for rationale, not invoked.
-- The worktree used during rebuild (`claude/funny-pike-e8a14e`) has been merged and removed.
+- Run `./scripts/preflight.sh` to check your setup
+- Read `docs/runbook.md` for common issues and fixes
+- Emergency: `./scripts/loop-runner.sh emergency_brake` pauses all ads immediately
 
-## If you inherit this cold
+## Reference docs
 
-Order of reads:
-1. `docs/HANDOFF.md` (this file) — 5 min
-2. `docs/walkthrough.md` — 15 min, the big-picture tour
-3. `CLAUDE.md` — 5 min, the operating rules
-4. `data/property.json` — 5 min (or however long it takes to populate)
-5. `docs/runbook.md` — 10 min, bookmark for later
-6. `docs/setup.md` — 20 min when you're installing
-
-Total cold-start to first-form-submit: ~2 hours if property.json content is ready; ~1 day if you're writing the property copy from scratch.
+| Doc | When to read |
+|-----|-------------|
+| `docs/walkthrough.md` | Once — full system tour (15 min) |
+| `docs/runbook.md` | When something needs attention |
+| `docs/setup.md` | Detailed setup reference |
