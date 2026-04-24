@@ -20,7 +20,7 @@ If you want the install steps instead, jump to `docs/setup.md`. If you want the 
 
 ## What this system is
 
-An autonomous Meta-ads + lead-gen operator for a real-estate deal. One person plus a daily loop replaces what would otherwise need a media buyer, a marketing coordinator, and a BDR. The humans do what humans are good at (sales calls, pricing decisions, contracts). The loop does what it is good at (scoring every lead the same way every day, pulling Meta metrics without forgetting a timeframe, pausing an ad with a bad hook rate at 4am, logging every decision so next week's decisions can learn from this week's).
+An autonomous Meta-ads + lead-gen operator for real estate. One person plus a daily loop replaces what would otherwise need a media buyer, a marketing coordinator, and a BDR. The humans do what humans are good at (sales calls, pricing decisions, contracts). The loop does what it is good at (scoring every lead the same way every day, pulling Meta metrics without forgetting a timeframe, pausing an ad with a bad hook rate at 4am, logging every decision so next week's decisions can learn from this week's).
 
 The system generalises to any property listing — swap `data/property.json`, refresh the Meta pixel, go.
 
@@ -167,7 +167,7 @@ Once you close a deal (or lose it), you tag the sheet row `closed` or `lost`. Th
 
 ### `data/`
 
-- **`property.json`** — the canonical listing. Every lead-facing piece of copy reads from here via the `property-context` skill. Ships with `UPDATE` placeholders; the loop refuses to run until they're gone.
+- **`property.json`** — the canonical listing. Every lead-facing piece of copy reads from here via the `property-context` skill. Created from `property.example.json` during setup; the loop refuses to run until every `UPDATE` placeholder is replaced with real content.
 - **`kill-scale-rules.json`** — pause/scale/refresh thresholds, auto-approval list, statistical guardrails (minimum impressions, minimum leads, minimum spend before judgement), and learning-phase restrictions (first 14 days or 50 Lead events — blocks scale/audience/creative changes so Meta's algorithm can optimize). Edit deliberately.
 - **`launch-config.json`** — created by the `campaign-launch` skill when you first go live. Records every campaign and ad set ID, the audience research snapshot, creative library snapshot, and learning-phase state (start date, event count, status). `reflective-ops` reads this to enforce learning-phase restrictions and know when to unlock full optimization. Do not edit during the learning phase.
 - **`scoring-model.json`** — the BANT + behavioural + property-fit weights. Tune weekly based on the correlation between lead score and closed deals.
@@ -203,7 +203,7 @@ The skill set splits into three layers:
 - `ads-meta/` — creative fatigue, audience overlap, pixel/CAPI health audit.
 - `ads-generate/` — image generation; prefers real photography from `property.json` over AI.
 
-Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides the upstream defaults without editing the body. Upstream updates stay mergeable.
+Each vendored skill has a patch block at the top that overrides upstream defaults with real-estate-specific rules, without editing the original body. This keeps upstream updates mergeable.
 
 ### `agents/`
 
@@ -230,7 +230,7 @@ Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides t
 
 ### `docs/`
 
-- **`HANDOFF.md`** — cold-start entry point; designed for someone picking up this repo for the first time. Now recommends the campaign launcher as the primary go-live path.
+- **`HANDOFF.md`** — cold-start entry point; designed for someone picking up this repo for the first time. Recommends the setup wizard as the fastest path and the campaign launcher for go-live.
 - **`setup.md`** — step-by-step install guide.
 - **`runbook.md`** — the on-call guide: what to do when the loop escalates or breaks.
 - **`walkthrough.md`** — this file.
@@ -245,7 +245,7 @@ Reference only — never edited. When upstream ships something worth taking, bum
 
 ### `tests/fixtures/`
 
-Two JSON fixtures (`hot_lead_payload.json`, `synthetic_kill_insight.json`) used to dry-run the form validation + scoring pipeline and the kill-rule + quality-gate pipeline without touching live credentials. The Phase 6 verification script uses these.
+Test fixtures (`hot_lead_payload.json`, `synthetic_kill_insight.json`, `synthetic_decisions.jsonl`) used to dry-run the form validation + scoring pipeline and the kill-rule + quality-gate pipeline without touching live credentials.
 
 ## The guardrails that keep this from burning money
 

@@ -40,7 +40,7 @@ The briefing is ordered so the top line is the thing that might need you *right 
 
 ## The lead-quality gate (don't disable it)
 
-The loop will not scale any ad set whose last-14-day average lead score is below `min_avg_lead_score_for_scale_up` (×10, because scores are on a 0–100 scale). This is the single most important guardrail — it prevents the Technically.dev failure mode (cheap clicks, unqualified leads, budget on fire).
+The loop will not scale any ad set whose last-14-day average lead score is below `min_avg_lead_score_for_scale_up` (×10, because scores are on a 0–100 scale). This is the single most important guardrail — it prevents the most common failure mode of autonomous ad systems: cheap clicks that look great on a CPL dashboard but produce unqualified leads and wasted budget.
 
 If the loop keeps holding an ad set you want to scale:
 
@@ -97,7 +97,7 @@ The sheet is full of cheap junk. Check `quality-by-adset` — you'll see a low a
 `form-handler.gs` dedups on phone within 30 days and sets `status=duplicate`. Check the notes column — if you see `status=duplicate`, one of the two rows was a repeat. Reply once to the earlier row and move on.
 
 ### "Apps Script throwing quota errors."
-Apps Script daily URL-Fetch quota is 20,000/day (paid) or 100/day (free). If you're hitting it, the hot-lead webhook is the usual culprit. Move it to a dedicated Cloudflare Worker or Lambda receiver — leave the rest of the Apps Script on its native quota.
+Apps Script has a daily URL-Fetch quota (20,000 calls/day for consumer Google accounts, higher for Workspace). If you're hitting it, the hot-lead webhook is the usual culprit. Move it to a dedicated Cloudflare Worker or Lambda receiver — leave the rest of the Apps Script on its native quota.
 
 ### "I need to pause everything NOW."
 ```bash

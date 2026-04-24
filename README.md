@@ -48,7 +48,8 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 ├── CLAUDE.md                        # Operating rules for Claude
 ├── .mcp.json                        # Meta Ads MCP config (Pipeboard)
 ├── data/
-│   ├── property.json                # Listing details (single source of truth)
+│   ├── property.example.json        # Example listing (copy to property.json during setup)
+│   ├── property.json                # Your listing details — created during onboarding
 │   ├── scoring-model.json           # BANT + behavioral scoring rubric
 │   ├── kill-scale-rules.json        # Pause/scale/refresh thresholds + learning phase
 │   ├── launch-config.json           # Created at launch — campaigns + learning phase state

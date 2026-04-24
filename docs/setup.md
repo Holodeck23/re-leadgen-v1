@@ -9,7 +9,6 @@ Bring this system online end-to-end. Work through the sections in order — each
 - Pipeboard account — https://pipeboard.co/api-tokens (free tier, for the Meta Ads MCP)
 - Claude Code installed and authenticated (`claude login`)
 - Python 3.10+
-- `gh` CLI authenticated (for submodule fetch if private)
 - A hosting target for the static landing page (Vercel / Netlify / GitHub Pages)
 
 ## 1. Clone + initialise submodules
@@ -32,7 +31,11 @@ This file is the single source of truth for every ad, follow-up, and landing-pag
 python3 -c "import json; d=json.load(open('data/property.json')); assert 'UPDATE' not in json.dumps(d), 'property.json still has UPDATE placeholders'"
 ```
 
-Required fields (see schema in `data/property.json`):
+```bash
+cp data/property.example.json data/property.json
+```
+
+Required fields (see `data/property.example.json` for a completed example):
 - `project_name`, `location.{country,region,city,description}`
 - `inventory.lots.{total,available,size_range,price_range}`
 - `inventory.complex_units.{total,available,types,price_range}`
@@ -126,7 +129,20 @@ python scripts/sheet-ops.py quality-by-adset           # should print {"by_adset
 python scripts/meta-insights.py | jq '.adsets|length'  # sanity for Meta credentials
 ```
 
-## 8. Schedule the reflective-ops loop
+## 8. Deploy the landing page
+
+The landing page follows a visual design system defined in `site/DESIGN.md` — warm off-white palette, earthy gold accent, system fonts, photography-forward. If your property has brand colors, set `branding.accent_color` in `data/property.json` to override the default accent. The `page-cro` skill reads `DESIGN.md` before making any markup or style changes.
+
+Any static host works. The page fetches `./property.json` at runtime, so deploy `site/` alongside a copy of `data/property.json`:
+
+```bash
+cp data/property.json site/property.json
+cd site && npx vercel --prod
+```
+
+For Netlify or GitHub Pages, publish the `site/` directory. Wire a custom domain, then plug it into the Pixel setup so event-match quality scores lift.
+
+## 9. Schedule the reflective-ops loop
 
 The loop has two cadences:
 
@@ -147,19 +163,6 @@ claude > use scheduled-tasks to create a daily task at 08:00 running /abs/path/r
 ```
 
 First invocation exits loudly if any of the property.json / env / MCP / Pixel prerequisites are missing. Fix each one and re-run.
-
-## 9. Deploy the landing page
-
-The landing page follows a visual design system defined in `site/DESIGN.md` — warm off-white palette, earthy gold accent, system fonts, photography-forward. If your property has brand colors, set `branding.accent_color` in `data/property.json` to override the default accent. The `page-cro` skill reads `DESIGN.md` before making any markup or style changes.
-
-Any static host works. The page fetches `./property.json` at runtime, so deploy `site/` alongside a copy of `data/property.json`:
-
-```bash
-cp data/property.json site/property.json
-cd site && npx vercel --prod
-```
-
-For Netlify or GitHub Pages, publish the `site/` directory. Wire a custom domain, then plug it into the Pixel setup so event-match quality scores lift.
 
 ## 10. Launch campaigns
 
