@@ -42,5 +42,24 @@
     "min_spend_usd_before_cpl_judgment": 50,
     "min_leads_before_cpl_judgment": 10,
     "evaluate_timeframes": ["today", "yesterday", "last_7_days", "lifetime"]
+  },
+  "learning_phase": {
+    "description": "Guardrails during Meta's algorithm learning phase (first 14 days or 50 Lead events). Editing audiences, budgets >20%, or rotating creative during this window resets the learning phase and wastes spend.",
+    "duration_days": 14,
+    "min_lead_events_to_exit": 50,
+    "allowed_actions_during_learning": ["pause", "hold"],
+    "blocked_actions_during_learning": ["scale_up", "scale_down", "expand_audience", "new_campaign", "refresh_creative", "disable_advantage_plus"],
+    "exception": {
+      "force_pause_if": {
+        "ctr_below": 0.005,
+        "min_spend_usd": 50,
+        "note": "Even during learning phase, an ad with CTR <0.5% after $50 spend is clearly failing. Pause it."
+      }
+    },
+    "post_learning_unlock": ["scale_up", "scale_down", "refresh_creative", "launch_variant"],
+    "cbo_consolidation_available_after": {
+      "min_winning_adsets": 2,
+      "winning_criteria": "CPL < target AND avg_lead_score >= min_avg_lead_score_for_scale_up AND 3+ consecutive profitable days"
+    }
   }
 }

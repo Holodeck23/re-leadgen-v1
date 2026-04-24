@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "description": "Created by campaign-launch skill. Records what was launched, when, and learning-phase guardrails. Do not edit during learning phase unless you understand the consequences (resets Meta's algorithm optimization).",
+  "launched_at": null,
+  "launched_by": "campaign-launcher",
+  "status": "not_launched",
+  "campaigns": [],
+  "total_daily_budget_usd": 0,
+  "learning_phase": {
+    "start_date": null,
+    "min_end_date": null,
+    "target_events_for_exit": 50,
+    "events_so_far": 0,
+    "status": "not_started",
+    "notes": "Meta needs ~50 Lead events and 14 days to exit learning phase. During this window: no audience changes, no budget changes >20%, no creative rotation unless an ad is clearly failing (CTR <0.005 after $50 spend). Pausing underperformers is still allowed."
+  },
+  "do_not_edit_until": null,
+  "do_not_edit_reason": "Learning phase active. See learning_phase.notes.",
+  "audience_research_snapshot": {
+    "segments_targeted": [],
+    "strategy": "hybrid_cold_start",
+    "manual_pct": 60,
+    "advantage_plus_pct": 40
+  },
+  "creative_library_snapshot": [],
+  "cold_start_complete": false,
+  "cold_start_criteria": {
+    "min_lead_events": 50,
+    "min_days": 14,
+    "advantage_plus_ready": false
+  },
+  "notes": ""
+}

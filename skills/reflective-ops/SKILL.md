@@ -21,12 +21,28 @@ The single most important thing: **lead quality gates every scaling decision**. 
 | `dry_run` | on demand | 1–6, 8 (skip 7 execute) | never |
 | `emergency_brake` | on demand | halt all scale-ups, pause everything at frequency >3 | pause only |
 
+## Step 0 — Check learning phase
+
+Before anything else, check if `data/launch-config.json` exists and if we are in a learning phase:
+
+1. Read `data/launch-config.json`. If it doesn't exist, skip this step (no campaigns launched yet via campaign-launcher).
+2. If `learning_phase.status == "active"`:
+   - Check `do_not_edit_until` date. If today < that date AND `learning_phase.events_so_far < learning_phase.target_events_for_exit`:
+     - **Learning phase is active.** Restrict the action vocabulary to `pause` and `hold` only. Read `kill-scale-rules.json.learning_phase.allowed_actions_during_learning`.
+     - Exception: force-pause is allowed if CTR < 0.005 after $50 spend (see `learning_phase.exception`).
+     - Add a banner to the briefing: `⚠ LEARNING PHASE ACTIVE — day {N} of 14, {events_so_far}/{target_events_for_exit} Lead events. Actions restricted to pause/hold.`
+   - If today ≥ `do_not_edit_until` OR events_so_far ≥ target_events_for_exit:
+     - Update `learning_phase.status` to `"exited"` in launch-config.json.
+     - Add to briefing: `✓ LEARNING PHASE COMPLETE — full optimization unlocked.`
+     - Check if CBO consolidation is available (≥2 winning ad sets per `learning_phase.cbo_consolidation_available_after`).
+
 ## Step 1 — Recover context
 
 Read:
 - Last 50 entries from `data/ad-history.jsonl` (append-only log; each line is one prior decision).
 - Last 20 git commits in the repo (the commit messages encode prior daily summaries: `ops: 2026-04-20 12 decisions, $147 spend, 4 leads, 1 hot`).
 - Current state of `data/kill-scale-rules.json` and `data/scoring-model.json` (rules may have been updated).
+- `data/launch-config.json` if it exists (learning-phase state, original targeting snapshot).
 - `property-context` skill output (STOP if BLOCKED).
 
 Build a 1-paragraph context summary: "Yesterday spent $X, got N leads, avg score Y. Ad sets A and B scaled +20% and held; ad set C was paused for frequency. Two escalations pending human approval from yesterday: [...]."

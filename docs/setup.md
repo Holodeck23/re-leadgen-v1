@@ -159,7 +159,21 @@ cd site && npx vercel --prod
 
 For Netlify or GitHub Pages, publish the `site/` directory. Wire a custom domain, then plug it into the Pixel setup so event-match quality scores lift.
 
-## 10. First-run checklist
+## 10. Launch campaigns
+
+**Recommended (zero ads experience needed):**
+
+Open Claude Code in this project and say "Launch my campaigns." The campaign launcher agent will:
+1. Verify property data and tracking are ready
+2. Research the best audiences for your property (Housing-compliant)
+3. Generate ad creative with proven psychological hooks
+4. Build campaign structure (budgets, placements, targeting)
+5. Walk you through every decision — nothing goes live without your approval
+6. Set up learning-phase guardrails (14 days / 50 events)
+
+**Manual alternative:** Create campaigns yourself in Meta Ads Manager. Set Special Ad Category: Housing on every campaign. Use the URL parameters from §5.1.
+
+## 11. First-run checklist
 
 Before driving any traffic:
 

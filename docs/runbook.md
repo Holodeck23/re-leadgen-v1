@@ -8,6 +8,7 @@ Everything here assumes the system is already set up (see `docs/setup.md`).
 
 Every morning at 08:00, `scripts/loop-runner.sh` invokes the `reflective-operator` agent, which:
 
+0. Checks `data/launch-config.json` for learning-phase status. If active, restricts to pause/hold only (see "First 2 weeks" below).
 1. Reads the last N entries of `data/ad-history.jsonl` and the most recent ops git commit to recover context.
 2. Pulls multi-timeframe Meta metrics (today / yesterday / 7d / lifetime) via the Pipeboard MCP.
 3. Queries `python scripts/sheet-ops.py quality-by-adset` for per-ad-set average lead score over the last 14 days.
@@ -77,6 +78,9 @@ If you miss the SLA on a genuine hot lead:
 
 ## Incident response — common failure modes
 
+### "The campaign launcher failed mid-way."
+The `campaign-launch` skill saves progress to `data/launch-config.json` with `"status": "incomplete"` and `"failed_at_step": N`. Fix the issue (usually MCP auth or Pixel not firing), then re-run the launcher — it checks for existing campaigns and resumes from the failure point.
+
 ### "The loop paused everything overnight."
 Something broke upstream (creative fatigue across the board, or Meta policy flag). Check `data/ad-history.jsonl` — every pause is logged with hypothesis. If the pauses were correct, queue creative refreshes. If they were false positives, the kill rules may be tuned too aggressive; inspect `data/kill-scale-rules.json`.
 
@@ -95,15 +99,24 @@ Apps Script daily URL-Fetch quota is 20,000/day (paid) or 100/day (free). If you
 ```
 Loop pauses all active ad sets, appends a `brake` event to `data/ad-history.jsonl`, and exits. Reversing is a manual `paid-ads` run — intentional friction.
 
-## First 2 weeks after launch
+## First 2 weeks after launch (the learning phase)
 
-Advantage+ audience needs ~50 conversion events to converge. With zero conversion history, Meta fires broad, the lead-quality gate holds everything flat, and the loop looks broken. This is expected.
+Meta's algorithm needs about 14 days and 50 Lead events to optimize delivery. During this window the system restricts itself automatically.
 
-**For the first 2 weeks / first 50 conversion events:**
-- Do NOT use Advantage+ audience
-- Use interest + location constrained targeting: country + real-estate / investment interests + age 25-65
-- Switch to Advantage+ only after Meta has enough signal (you'll see it in the briefing when lead quality stabilizes)
-- Don't panic if the quality gate blocks every scale decision — that's the gate working correctly on thin data
+**If you used the campaign launcher** (recommended): it already set up the hybrid cold-start strategy (60% manual targeting + 40% Advantage+), wrote `data/launch-config.json` with the learning-phase guardrails, and configured `reflective-ops` Step 0 to enforce them. The morning briefing shows a banner: `⚠ LEARNING PHASE ACTIVE — day N of 14, X/50 Lead events.` You don't need to do anything special — just respond to hot leads and approve escalations as usual.
+
+**If you launched manually**: the same rules apply, but you need to be disciplined:
+- Do NOT change audiences or targeting — it resets the learning phase
+- Do NOT change budgets by more than 20% per ad set
+- Do NOT rotate creative unless an ad is clearly failing (CTR <0.5% after $50 spend)
+- The quality gate will hold everything flat on thin data — this is expected, not broken
+- Switch from manual-only to Advantage+ after you have ~50 conversion events
+
+**What happens when learning phase ends:**
+- `reflective-ops` detects the exit criteria (14 days elapsed OR 50 Lead events) and updates `data/launch-config.json` → `learning_phase.status` to `"exited"`
+- Morning briefing announces: `✓ LEARNING PHASE COMPLETE — full optimization unlocked.`
+- Full action vocabulary unlocks: scale, creative refresh, launch variant
+- CBO consolidation becomes available when ≥2 ad sets are winning (CPL below target + lead quality above gate + 3 consecutive profitable days)
 
 ## Weekly review cadence (30 minutes, Friday)
 

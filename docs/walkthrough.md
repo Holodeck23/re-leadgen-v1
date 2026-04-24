@@ -57,20 +57,23 @@ Seven principles shaped every file in the repo. When you change something, check
      ┌─────▼─────┐           ┌──────▼──────┐           ┌─────▼─────┐
      │ site/     │           │  skills/    │           │  agents/  │
      │ index.html│           │  (Claude)   │           │           │
-     │ form-     │           │             │           │ reflective│
-     │ handler.gs│           │  reflective │           │  -operator│
-     │ thank-you │           │  -ops       │           │           │
-     └─────┬─────┘           │  lead-      │           │ creative- │
-           │                 │   qualifier │           │  auditor  │
-           │                 │  follow-up  │           │           │
-           ▼                 │  nurture-   │           │ lead-     │
-   ┌──────────────┐          │   orchestr. │◄──────────┤  scorer   │
-   │ Google Sheet │          │  ad-creative│           └───────────┘
-   │   (the CRM)  │◄─────────┤  paid-ads   │
-   └──────┬───────┘          │  ads-meta   │──►┌───────────────────┐
-          │                  │  unicorn-   │   │  Meta Ads MCP     │
-          │                  │   promoter  │   │  (via Pipeboard)  │
-          │                  │  (and 5 more)│   └───────────────────┘
+     │ form-     │           │             │           │ campaign- │
+     │ handler.gs│           │  campaign-  │           │  launcher │
+     │ thank-you │           │   launch    │           │           │
+     └─────┬─────┘           │  audience-  │           │ reflective│
+           │                 │   research  │           │  -operator│
+           │                 │  reflective │           │           │
+           ▼                 │  -ops       │           │ creative- │
+   ┌──────────────┐          │  lead-      │           │  auditor  │
+   │ Google Sheet │          │   qualifier │           │           │
+   │   (the CRM)  │◄─────────┤  follow-up  │           │ lead-     │
+   └──────┬───────┘          │  nurture-   │◄──────────┤  scorer   │
+          │                  │   orchestr. │           └───────────┘
+          │                  │  ad-creative│
+          │                  │  paid-ads   │──►┌───────────────────┐
+          │                  │  ads-meta   │   │  Meta Ads MCP     │
+          │                  │  (and 6 more)│   │  (via Pipeboard)  │
+          │                  │             │   └───────────────────┘
           │                  └──────┬──────┘
           │                         │
           │                         ▼
@@ -165,7 +168,8 @@ Once you close a deal (or lose it), you tag the sheet row `closed` or `lost`. Th
 ### `data/`
 
 - **`property.json`** — the canonical listing. Every lead-facing piece of copy reads from here via the `property-context` skill. Ships with `UPDATE` placeholders; the loop refuses to run until they're gone.
-- **`kill-scale-rules.json`** — pause/scale/refresh thresholds, auto-approval list, statistical guardrails (minimum impressions, minimum leads, minimum spend before judgement). Edit deliberately.
+- **`kill-scale-rules.json`** — pause/scale/refresh thresholds, auto-approval list, statistical guardrails (minimum impressions, minimum leads, minimum spend before judgement), and learning-phase restrictions (first 14 days or 50 Lead events — blocks scale/audience/creative changes so Meta's algorithm can optimize). Edit deliberately.
+- **`launch-config.json`** — created by the `campaign-launch` skill when you first go live. Records every campaign and ad set ID, the audience research snapshot, creative library snapshot, and learning-phase state (start date, event count, status). `reflective-ops` reads this to enforce learning-phase restrictions and know when to unlock full optimization. Do not edit during the learning phase.
 - **`scoring-model.json`** — the BANT + behavioural + property-fit weights. Tune weekly based on the correlation between lead score and closed deals.
 - **`nurture-sequences.json`** — tier-matched message sequences with milestone triggers.
 - **`ad-history.jsonl`** — append-only decision log. One JSON object per line. The loop reads the tail to recover context.
@@ -177,6 +181,10 @@ The skill set splits into three layers:
 **Foundation (RE-specific, invoked by many others):**
 - `property-context/` — reads `property.json` and emits a Context Block plus the anti-slop writing rules. Every lead-facing skill invokes this first. Blocks loudly if `property.json` still has `UPDATE`.
 
+**Campaign creation (zero to live):**
+- `campaign-launch/` — the 9-step sequence that takes someone with zero ads experience from "property data filled in" to "Meta campaigns running." Validates data, checks Pixel health, researches audiences (via `audience-research`), generates creative with 6 psychological hook categories, builds campaign structure with Housing Special Ad Category compliance, runs a 17-item pre-launch checklist, creates everything via the Meta Ads API (paused), writes `data/launch-config.json` with learning-phase guardrails, and goes live only on explicit user approval.
+- `audience-research/` — builds Meta ad targeting from property data alone. Produces segment-specific interest stacks (investor, homebuyer, retiree, expat), location targeting (primary radius + feeder cities + international markets), a hybrid cold-start strategy (60% manual targeting + 40% Advantage+), life-event targeting layers, and retargeting/exclusion audiences. Full Housing Special Ad Category compliance: no ZIP targeting, no gender selection, no age narrowing below 18 or above 65, minimum 15-mile radius.
+
 **RE-rewritten core:**
 - `lead-qualifier/` — scores a lead against `scoring-model.json`. Returns tier, segment (investor / homebuyer / retiree / expat / generic), and a ≤280-char notes line.
 - `follow-up/` — drafts WhatsApp (≤3 sentences) and email (5–8 sentences) per segment. WhatsApp-first for hot leads; email-first when sending artefacts.
@@ -185,8 +193,8 @@ The skill set splits into three layers:
 - `reflective-ops/` — the daily loop. Described above.
 
 **Vendored + patched (from `vendor/marketingskills` and `vendor/claude-ads`):**
-- `ad-creative/` — generate-mode and iterate-from-performance mode; produces 6 Meta variants (2 Feed, 2 Reels, 1 Carousel, 1 Retargeting).
-- `paid-ads/` — Meta-only, `OUTCOME_LEADS` objective, daily-budget cap hard stop.
+- `ad-creative/` — generate-mode and iterate-from-performance mode; produces 6 Meta variants (2 Feed, 2 Reels, 1 Carousel, 1 Retargeting). Enhanced with 6 psychological hook categories: curiosity gap, social proof, specificity, loss aversion, identity, and pattern interrupt.
+- `paid-ads/` — Meta-only, `OUTCOME_LEADS` objective, daily-budget cap hard stop. Housing Special Ad Category mandatory on every campaign.
 - `analytics-tracking/` — Pixel + CAPI priorities, UTM capture, quality-by-adset query.
 - `ab-test-setup/` — hypothesis format (IF/THEN/BECAUSE/REVISIT), 1000-impression / 10-lead / $50-spend minimums.
 - `page-cro/` — drone video hero, 3-field form, 3 testimonials, FAQ, sticky mobile CTA.
@@ -198,7 +206,8 @@ Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides t
 
 ### `agents/`
 
-- **`reflective-operator.md`** (sonnet) — runs the daily loop end-to-end. Given mode (`full`, `hot_sweep`, `dry_run`, `emergency_brake`), it invokes `reflective-ops` with the right tool permissions.
+- **`campaign-launcher.md`** (sonnet) — end-to-end campaign creation agent. Orchestrates the `campaign-launch` skill through all 9 steps with user approval gates at audience research, creative review, campaign structure, and go-live. Designed for users with zero ads experience. Creates everything PAUSED, explains every decision in plain language, only goes live on explicit confirmation.
+- **`reflective-operator.md`** (sonnet) — runs the daily loop end-to-end. Given mode (`full`, `hot_sweep`, `dry_run`, `emergency_brake`), it invokes `reflective-ops` with the right tool permissions. Now includes Step 0: learning-phase check that reads `data/launch-config.json` and restricts actions during the first 14 days / 50 Lead events.
 - **`lead-scorer.md`** (haiku) — batch-scores new leads from the sheet. Cheap model, frequent invocation, one ALERT banner per hot lead.
 - **`creative-auditor.md`** (sonnet) — wraps `ads-meta` for on-demand creative fatigue / diversity / on-brand audits. Never auto-pauses; it's a second-opinion tool.
 
@@ -219,6 +228,7 @@ Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides t
 
 ### `docs/`
 
+- **`HANDOFF.md`** — cold-start entry point; designed for someone picking up this repo for the first time. Now recommends the campaign launcher as the primary go-live path.
 - **`setup.md`** — step-by-step install guide.
 - **`runbook.md`** — the on-call guide: what to do when the loop escalates or breaks.
 - **`walkthrough.md`** — this file.
@@ -239,9 +249,9 @@ Two JSON fixtures (`hot_lead_payload.json`, `synthetic_kill_insight.json`) used 
 
 The three original weak skills (`ad-copy`, `campaign-ops`, `daily-ops`), kept readable as reference for what not to do. Safe to delete once the team is comfortable with the replacements.
 
-## The two guardrails that keep this from burning money
+## The guardrails that keep this from burning money
 
-Two things prevent the default failure mode of autonomous ad systems — optimising hard for the wrong metric.
+Four things prevent the default failure mode of autonomous ad systems — optimising hard for the wrong metric.
 
 ### 1. The lead-quality gate
 
@@ -253,7 +263,21 @@ This is the guardrail that keeps "cheap clicks" from turning into "cheap worthle
 
 `kill-scale-rules.json` → `targets.daily_budget_cap_usd`. `loop-runner.sh` reads this at preflight; if today's Meta spend is within `cap_headroom_pct` (10%) of the cap, the loop downgrades to `emergency_brake` — it can still pause things, it cannot scale or launch. An actual cap breach is simply impossible because the loop cannot step outside the rules it reads at startup.
 
-Both guardrails are edited by changing a JSON file and committing with intent — they cannot be monkey-patched mid-run.
+### 3. Learning-phase protection
+
+When you first launch campaigns (via the `campaign-launch` skill or manually), Meta's algorithm needs about 14 days and 50 Lead events to learn who converts. During this learning phase, changes to audiences, large budget shifts, or creative rotation reset the algorithm and waste the budget spent so far.
+
+`data/launch-config.json` tracks learning-phase state (start date, event count, status). `reflective-ops` Step 0 reads it and restricts the action vocabulary to `pause` and `hold` only. Exception: an ad with CTR <0.005 after $50 spend gets force-paused even during learning — it's clearly failing. Once the learning criteria are met, the system auto-unlocks full optimization and notes it in the morning briefing.
+
+The learning-phase rules live in `data/kill-scale-rules.json` → `learning_phase`.
+
+### 4. Housing Special Ad Category
+
+All real estate ads on Meta must declare `special_ad_categories: ["HOUSING"]`. This restricts targeting: ages 18–65+ only, all genders, no ZIP/postal code targeting, minimum 15-mile location radius, no income/net-worth/credit-score interests. Violating this causes ad rejection or account restriction.
+
+This requirement is enforced in `audience-research`, `campaign-launch`, and `paid-ads` skills.
+
+All four guardrails are edited by changing a JSON file and committing with intent — they cannot be monkey-patched mid-run.
 
 ## How you interact with the system day-to-day
 
@@ -279,7 +303,9 @@ Everything else runs itself. If you're touching the system every day beyond thos
 ### Adding a new property
 
 1. Duplicate the repo (or add a `properties/` dir if you want to multiplex — but start with one).
-2. Populate the new `property.json`. Everything else follows.
+2. Populate the new `property.json`.
+3. Run `./scripts/onboard.sh` to set up the CRM, Pixel, and env vars.
+4. Open Claude Code and say "Launch my campaigns" — the campaign launcher researches audiences, generates creative, builds campaign structure, and walks you through going live. Zero ads experience required.
 
 ### Swapping the CRM
 

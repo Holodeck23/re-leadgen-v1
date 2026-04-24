@@ -140,19 +140,41 @@ Then submit a test form on your landing page and verify:
 - `Lead` event appears in Meta Events Manager within 60 seconds
 - Delete the test row when done
 
-## Step 10: Go live
+## Step 10: Launch your campaigns
 
-1. Set your ad URL parameters in Meta Ads Manager (every ad):
+**Recommended (zero ads experience needed):**
+
+Open Claude Code in this project and say:
+```
+Launch my campaigns
+```
+
+The campaign launcher will:
+1. Verify your property data and tracking are ready
+2. Research the best audiences for your property
+3. Generate professional ad creative with proven psychological hooks
+4. Build your campaign structure (targeting, budgets, placements)
+5. Walk you through everything and explain each decision
+6. Create the campaigns in Meta — nothing goes live until you say "launch"
+
+It handles Special Ad Category (Housing) compliance, learning-phase guardrails, and budget safety automatically.
+
+**Manual alternative:**
+
+If you prefer to create campaigns yourself in Meta Ads Manager:
+1. Set Special Ad Category: Housing on every campaign
+2. Set your ad URL parameters (every ad):
    ```
    adset_id={{adset.id}}&utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}
    ```
-2. Launch 1-3 campaigns at $20-50/day per ad set
-3. Install the daily loop:
-   ```bash
-   # Add to crontab (adjust path and timezone):
-   0 8 * * *              cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh >> ops.log 2>&1
-   0 9,11,13,15,17,19 * * * cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh hot_sweep >> ops.log 2>&1
-   ```
+3. Launch 1-3 campaigns at $20-50/day per ad set
+
+**After launching (either method), install the daily loop:**
+```bash
+# Add to crontab (adjust path and timezone):
+0 8 * * *              cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh >> ops.log 2>&1
+0 9,11,13,15,17,19 * * * cd /path/to/re-leadgen-v1 && ./scripts/loop-runner.sh hot_sweep >> ops.log 2>&1
+```
 
 ## After go-live: your daily routine
 
@@ -162,9 +184,16 @@ Then submit a test form on your landing page and verify:
 
 **When you close a deal:** Tag the row in the sheet as `closed`. The system uses this to improve over time.
 
-## Important: first 2 weeks
+## Important: first 2 weeks (the learning phase)
 
-Don't use Meta's Advantage+ audience until you have ~50 conversion events. Start with interest + location targeting (country + real estate/investment interests + age 25-65). The system will tell you when to switch.
+Meta's algorithm needs about 14 days and 50 Lead events to learn who your best buyers are. During this window:
+
+- **Don't change audiences or targeting** — it resets the learning phase
+- **Don't change budgets by more than 20%** — same reason
+- **Don't rotate creative** unless something is clearly failing (the system knows when)
+- **Do** let the system pause underperformers — that's safe and saves budget
+
+The system tracks learning-phase status automatically in `data/launch-config.json` and restricts its own actions during this window. If you used the campaign launcher, it set up a hybrid approach: 60% manual targeting (so you can see which segments work) + 40% Advantage+ (so Meta can find buyers you didn't expect). Once you hit 50 events, Advantage+ improves dramatically.
 
 ## If something breaks
 
