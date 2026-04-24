@@ -86,6 +86,7 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 │   ├── sheet-ops.py                 # Google Sheets CLI
 │   └── meta-insights.py             # Meta Graph API fallback
 ├── site/
+│   ├── DESIGN.md                    # Visual design system (colors, typography, components)
 │   ├── index.html                   # Landing page (3-field form + Pixel)
 │   ├── form-handler.gs              # Apps Script (form → Sheet + CAPI)
 │   └── thank-you.html               # Post-submit (Calendly + email capture)

@@ -24,6 +24,8 @@ Authenticate via Pipeboard token. If auth fails, tell the user to refresh at htt
 - **`data/nurture-sequences.json`** — tier-matched sequences, milestone-triggered. Read by `nurture-orchestrator`.
 - **`data/ad-history.jsonl`** — append-only decision log. Read by `reflective-ops` to recover context each run.
 
+- **`site/DESIGN.md`** — visual design system for the landing page and thank-you page. Color tokens, typography scale, spacing, component specs, photography direction, performance targets. Read by `page-cro` before any markup/style changes.
+
 Always load `data/property.json` via the `property-context` skill — it produces the canonical context block plus anti-slop rules. Do not hardcode property facts.
 
 ## Skills

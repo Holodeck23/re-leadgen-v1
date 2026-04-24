@@ -223,6 +223,7 @@ Each vendored skill starts with a **RE-LEADGEN-V1 PATCH** block that overrides t
 
 ### `site/`
 
+- **`DESIGN.md`** — visual design system for the landing pages. Defines color tokens (warm off-white + earthy gold accent), typography scale (system fonts, fluid sizing), spacing system, component specs (hero, form, cards, FAQ, mobile CTA), photography direction, and performance targets (<2.5s LCP, <500KB). Read by `page-cro` before any markup changes. Accent color overridable via `property.json → branding.accent_color`.
 - **`index.html`** — property.json-hydrated landing page, 3-field form, Pixel init, UTM + return-visitor capture, event-ID dedup, sticky mobile CTA.
 - **`form-handler.gs`** — the Apps Script behind the form. Validation, dedup, webhook fire-and-forget.
 - **`thank-you.html`** — post-submit page with conditional Calendly, progressive email capture, Pixel conversion event.

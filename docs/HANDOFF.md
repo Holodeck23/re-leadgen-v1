@@ -89,6 +89,8 @@ This creates a fully configured sheet with headers, column widths, data validati
 
 ## Step 5: Configure the landing page
 
+The landing page follows a visual design system defined in `site/DESIGN.md` — warm, trust-first, photography-forward. If your property has brand colors, set `branding.accent_color` in `data/property.json` to override the default earthy gold.
+
 1. In `site/index.html` and `site/thank-you.html`:
    - Replace `REPLACE_WITH_DEPLOYED_APPS_SCRIPT_URL` with your Apps Script URL
    - Replace `PIXEL_ID` with your Meta Pixel ID

@@ -43,6 +43,8 @@ contact.sales_phone   — non-empty
 contact.sales_whatsapp — non-empty
 ```
 
+Also verify the landing page is deployed and looks right. If `property.json` has a `branding.accent_color` field, note it — it can override the default gold accent in `site/DESIGN.md`.
+
 Print a checklist. If anything is missing, tell the user exactly what to add and STOP.
 
 ### Step 2 — Pixel and CAPI health check
