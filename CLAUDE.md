@@ -47,6 +47,7 @@ Read the full SKILL.md before using any skill. Don't paraphrase from memory.
 
 ### Ads (ongoing management)
 - `skills/ad-creative/` — generate or iterate-from-performance. Produces 6 Meta variants (2 Feed, 2 Reels, 1 Carousel, 1 Retargeting). Enhanced with psychological hook categories (curiosity gap, social proof, specificity, loss aversion, identity, pattern interrupt).
+- `skills/competitive-intel/` — analyze competitor ads from the Meta Ad Library. Classifies by hook type, angle, and segment; produces pattern reports and inspiration seeds that feed into `ad-creative`. Never copies — extracts psychology, adapts with your property data.
 - `skills/paid-ads/` — campaign lifecycle (launch, pause, scale, refresh) under `kill-scale-rules.json` thresholds. Meta-only. `OUTCOME_LEADS` objective. Daily-budget cap is a hard stop.
 - `skills/ads-meta/` — creative fatigue, audience overlap, Pixel/CAPI health audit. Paper trail only; never auto-pauses — `reflective-ops` owns execution.
 - `skills/ads-generate/` — image generation; prefers real photography from `property.json` over AI.
