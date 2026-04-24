@@ -11,7 +11,7 @@ metadata:
 
 **Test matrix for Meta creative (default):**
 - 3 hooks × 3 angles × 2 offers = 18 combinations. Run as 6 genuinely distinct variants per round (Meta's Andromeda engine suppresses near-duplicates with similarity >60%). Rotate the other 12 in subsequent rounds.
-- Angles: aspiration, scarcity (89 lots, X remaining), investment-ROI.
+- Angles: aspiration, scarcity (N lots, X remaining — from property.json), investment-ROI.
 - Hooks: question, specific number, contrarian claim.
 - Offers: brochure download, discovery call, WhatsApp for pricing.
 

@@ -47,7 +47,7 @@ ask() {
   if [[ -z "$input" ]] && [[ -n "$default" ]]; then
     input="$default"
   fi
-  eval "$var_name='$input'"
+  printf -v "$var_name" '%s' "$input"
 }
 
 ask_yn() {
@@ -311,6 +311,28 @@ if [[ -n "$pixel_id" ]]; then
   fi
 else
   skip "Skipped — replace PIXEL_ID in site/*.html before launching"
+fi
+
+# ============================================================
+step "Calendly (optional)"
+# ============================================================
+
+echo "  Hot leads see a Calendly embed on the thank-you page."
+echo "  If you use Calendly, paste your scheduling link handle."
+echo ""
+echo "  Example: if your link is calendly.com/jane-smith/15min"
+echo "  just enter: jane-smith"
+
+ask "Calendly handle (or press Enter to skip)" calendly_handle
+
+if [[ -n "$calendly_handle" ]]; then
+  if grep -q "REPLACE_WITH_CALENDLY_HANDLE" site/thank-you.html 2>/dev/null; then
+    sed -i.bak "s|REPLACE_WITH_CALENDLY_HANDLE|${calendly_handle}|g" site/thank-you.html
+    rm -f site/thank-you.html.bak
+    ok "Updated site/thank-you.html with Calendly handle"
+  fi
+else
+  skip "Skipped — replace REPLACE_WITH_CALENDLY_HANDLE in site/thank-you.html if you use Calendly"
 fi
 
 # ============================================================
