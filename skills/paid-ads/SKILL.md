@@ -11,6 +11,8 @@ metadata:
 
 **Campaign objective:** OUTCOME_LEADS (not Conversions, not Traffic). Lead forms live at the landing page — destination is the site's form, not Meta's instant forms.
 
+**Special Ad Category: Housing (mandatory).** Every campaign must declare `special_ad_categories: ["HOUSING"]`. This restricts targeting: ages 18–65+ only, all genders, no ZIP codes, 15-mile minimum radius, no income/net-worth interests. Violating this causes ad rejection or account restriction.
+
 **Hard rules (read these files before any decision):**
 - `data/property.json` via `property-context` skill — all copy and claims reference it.
 - `data/kill-scale-rules.json` — every pause / scale / refresh decision uses these thresholds. Do not invent your own.

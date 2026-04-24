@@ -15,9 +15,23 @@ metadata:
 3. Read `data/kill-scale-rules.json` — performance iteration threshold is `ctr_wow_drop > 15%` or `frequency > 2.5` triggers refresh.
 4. Skip `.agents/product-marketing-context.md` lookup — that file does not exist in this repo; `data/property.json` is the only context source.
 
+**Psychological hook categories (use at least one ad per category when generating from scratch):**
+
+| Category | Psychology | Pattern |
+|----------|-----------|---------|
+| Curiosity gap | Information gap → brain needs closure | "Most people don't know this about [location]..." |
+| Social proof | Bandwagon / authority bias | "[X] lots sold in [timeframe]. Here's what buyers saw." |
+| Specificity | Concrete > abstract in memory + trust | "[Exact size] with [exact amenity] — $[exact price]" |
+| Loss aversion | Fear of missing > desire to gain | "[N] lots left at phase-1 pricing. Phase 2 is [X]% higher." |
+| Identity | Self-concept → aspiration match | "Built for people who [identity hook from audience]" |
+| Pattern interrupt | Novelty captures attention in scroll | Unexpected fact, drone angle, or direct question |
+
+When iterating from performance data, identify which hook categories are winning and generate more variants in those categories while testing 1–2 new categories.
+
 **Output shape (per generation run):**
-- 6 variations: 2 Feed (different segments), 2 Reels/Stories (vertical, 9:16, hook in first 1s), 1 Carousel (3–5 cards outlined), 1 Retargeting (for site visitors).
-- Each variation must state: segment id, hook, angle, offer, primary text (≤125 chars), headline (≤40 chars), description (≤30 chars), CTA.
+- 6 variations: 2 Feed (different segments, different hook categories), 2 Reels/Stories (vertical, 9:16, hook in first 1s), 1 Carousel (3–5 cards outlined), 1 Retargeting (for site visitors).
+- Each variation must state: segment id, hook category, hook, angle, offer, primary text (≤125 chars), headline (≤40 chars), description (≤30 chars), CTA.
+- Write approved variants to `data/creative-library.jsonl` (one JSON per line, `status: "approved"`).
 
 **Anti-slop rules (from CLAUDE.md — non-negotiable):**
 - Never use: "nestled in", "boasts", "stunning", "hidden gem", "paradise awaits", em-dashes, any filler real-estate adjective.
