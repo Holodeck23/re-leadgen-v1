@@ -115,6 +115,8 @@ def _derive_kpis(row: dict[str, Any]) -> dict[str, Any]:
     reach = int(row.get("reach", 0) or 0)
     frequency = float(row.get("frequency", 0) or 0)
     clicks = int(row.get("clicks", 0) or 0)
+    # Meta API returns CTR as a percentage string (e.g., "1.5").
+    # We convert to a decimal (0.015) to match kill-scale-rules.json thresholds (e.g., 0.008).
     ctr = float(row.get("ctr", 0) or 0) / 100.0
     cpm = float(row.get("cpm", 0) or 0)
     cpc = float(row.get("cpc", 0) or 0)
@@ -149,15 +151,23 @@ def insights_for_adset(adset_id: str, timeframe: str, params: dict[str, str]) ->
     return {"timeframe": timeframe, **_derive_kpis(rows[0])}
 
 
-def snapshot(adset_filter: str | None = None) -> dict[str, Any]:
+def snapshot(adset_filter: str | None = None, since: str | None = None) -> dict[str, Any]:
     adsets = list_active_adsets()
     if adset_filter:
         adsets = [a for a in adsets if a.get("id") == adset_filter]
 
+    # If --since is provided, we override the 'lifetime' timeframe
+    custom_timeframes = list(TIMEFRAMES)
+    if since:
+        custom_timeframes = [
+            (name, params if name != "lifetime" else {"time_range": json.dumps({"since": since, "until": date.today().isoformat()})})
+            for name, params in custom_timeframes
+        ]
+
     out: list[dict[str, Any]] = []
     for a in adsets:
         timeframes: dict[str, Any] = {}
-        for name, params in TIMEFRAMES:
+        for name, params in custom_timeframes:
             try:
                 timeframes[name] = insights_for_adset(a["id"], name, params)
             except RuntimeError as e:
@@ -181,11 +191,16 @@ def snapshot(adset_filter: str | None = None) -> dict[str, Any]:
 
 def _main(argv: list[str]) -> int:
     adset_filter: str | None = None
+    since: str | None = None
     if "--adset" in argv:
         i = argv.index("--adset")
         if i + 1 < len(argv):
             adset_filter = argv[i + 1]
-    print(json.dumps(snapshot(adset_filter=adset_filter), indent=2))
+    if "--since" in argv:
+        i = argv.index("--since")
+        if i + 1 < len(argv):
+            since = argv[i + 1]
+    print(json.dumps(snapshot(adset_filter=adset_filter, since=since), indent=2))
     return 0
 
 
