@@ -115,6 +115,13 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 - **Learning-phase protection**: first 14 days / 50 Lead events — restricts to pause/hold only so Meta's algorithm can optimize
 - **Housing compliance**: Special Ad Category enforced on every campaign (ages 18–65+, all genders, no ZIP, 15-mile min radius)
 
+## Security & Safety
+
+- **RCE Mitigation**: AI agents are restricted from arbitrary shell execution (`Bash` tool removed for scoring/auditing agents).
+- **Prompt Injection Defense**: Lead data is strictly encapsulated in XML tags; models are instructed to treat it as inert text.
+- **Data Poisoning Defense**: Suspicious lead spikes (>50/day per ad set) or sudden quality drops automatically disable auto-scaling and force human review.
+- **Audit Trail**: Every decision is git-committed with a rationale, providing a non-repudiable history of autonomous actions.
+
 ## Requirements
 
 - Claude Code (authenticated)
