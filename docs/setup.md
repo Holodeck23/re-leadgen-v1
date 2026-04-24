@@ -150,6 +150,8 @@ First invocation exits loudly if any of the property.json / env / MCP / Pixel pr
 
 ## 9. Deploy the landing page
 
+The landing page follows a visual design system defined in `site/DESIGN.md` — warm off-white palette, earthy gold accent, system fonts, photography-forward. If your property has brand colors, set `branding.accent_color` in `data/property.json` to override the default accent. The `page-cro` skill reads `DESIGN.md` before making any markup or style changes.
+
 Any static host works. The page fetches `./property.json` at runtime, so deploy `site/` alongside a copy of `data/property.json`:
 
 ```bash

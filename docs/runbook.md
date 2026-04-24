@@ -68,6 +68,12 @@ If you miss the SLA on a genuine hot lead:
 - cancels the calendar-fallback step if a milestone-trigger step is imminent.
 - drafts the next message via `follow-up` skill (you approve before send unless you set auto-send in your own config).
 
+## Landing page changes
+
+All landing page modifications follow the design system in `site/DESIGN.md`. The `page-cro` skill reads it before generating or editing any markup or styles — color tokens, typography scale, spacing, component specs, and performance targets (<2.5s LCP, <500KB excluding video) are all defined there.
+
+If your property has brand colors, set `branding.accent_color` in `data/property.json` to override the default earthy gold accent. The design system supports this without touching any other token.
+
 ## Creative refresh rotation
 
 `ad-creative` and `ads-generate` work together:
