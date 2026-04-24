@@ -12,7 +12,8 @@ You score one or more leads against the rubric in `data/scoring-model.json`. Eve
 
 1. **Load rubric.** Read `data/scoring-model.json`. If the file is missing or malformed, STOP and return `ERROR: scoring model unavailable`.
 2. **Load property context.** Invoke `property-context` skill. The lead's `budget` and `interest` fields are compared against `inventory.*.price_range` and `target_audiences` from property.json. If property-context returns BLOCKED, STOP.
-3. **Parse lead.** Required sheet columns: `name, email, phone, interest, budget, timeline, message, source`. Optional: `return_visitor`, `event_id`. Preserve raw values; do not mutate the lead record.
+3. **Parse lead.** Required sheet columns: `name, email, phone, interest, budget, timeline, message, source`. Optional: `return_visitor`, `event_id`, `phase`. Preserve raw values; do not mutate the lead record.
+3b. **Determine phase.** Check `scoring-model.json.initial_phase.enabled`. If true, read the lead's `phase` field (default `initial` if absent). This affects tier assignment in step 6b.
 4. **Extract signals.** For each feature category in `scoring-model.json.features`, evaluate which weighted signals apply:
    - **budget_capacity**: parse budget range, compare to listing range. Scan `message` for "cash", "pre-approved", "pre-approval", "financing approved" (case-insensitive) → `pre_approved_or_cash`.
    - **authority**: scan `message` for "I", "my wife/husband/partner", "need my ... approval".
@@ -21,8 +22,14 @@ You score one or more leads against the rubric in `data/scoring-model.json`. Eve
    - **behavioral**: presence of `phone`, whatsapp (if phone starts +country and message mentions WhatsApp or channel=whatsapp), message length, specific questions (does message contain "?"), `return_visitor=true`, engagement-with-first-followup (from sheet notes if prior contact recorded).
    - **source_quality**: parse `source` field. UTM `utm_source=organic` or `referral` → bump. `utm_medium=cpc` + `utm_campaign` with "retargeting" → retargeting. Otherwise check `utm_campaign` against known lookalike vs prospecting naming conventions.
    - **risk_flags**: check for missing phone+message, disposable-email domains (mailinator, tempmail, 10minute, yopmail, guerrillamail), duplicate leads within 30 days.
-5. **Sum to score.** Apply weights literally. Clamp to `[0, 100]`.
-6. **Assign tier.** Compare score to `tiers.hot.min`, `tiers.nurture.min`, else `long_cycle`.
+5. **Sum to score.** Apply weights literally. Clamp to `[0, 100]`. Always compute and store the full-rubric score regardless of phase.
+6. **Assign tier (full-rubric).** Compare score to `tiers.hot.min`, `tiers.nurture.min`, else `long_cycle`. Store as `rubric_tier`.
+6b. **Apply initial-phase tier override (Strategy B).** If `initial_phase.enabled` and `phase == "initial"`:
+   - Check the lead's `interest` field (case-insensitive) against `initial_phase.phases.initial.tier_overrides.hot_if.interest_in`. If any keyword matches AND `phone` is present → override tier to `hot`, SLA to 2h. This means "contact them within 2h" — it does NOT affect the quality gate for scaling decisions, which still uses the full-rubric score.
+   - Else check against `nurture_if.interest_in`. If any keyword matches AND `phone` is present → override tier to `nurture`, SLA to 24h.
+   - Else → `long_cycle` (fallback).
+   - In the output, set `tier` to the overridden value and `rubric_score` to the computed score. Add `phase: "initial"` and `tier_source: "initial_phase_override"` to the output.
+   - If `phase == "post_contact"`: use the full-rubric tier from step 6 with no override. Set `tier_source: "full_rubric"`.
 7. **Match segment.** Compare lead's message + interest against each `audience_segments.segments[].signals` array (case-insensitive substring match). Assign the first matching segment; default `generic`.
 8. **Produce the output record** (see below).
 
@@ -32,7 +39,10 @@ You score one or more leads against the rubric in `data/scoring-model.json`. Eve
 {
   "lead_id": "<row or email-phone hash>",
   "score": 78,
+  "phase": "initial",
   "tier": "hot",
+  "tier_source": "initial_phase_override",
+  "rubric_tier": "nurture",
   "segment": "investor",
   "channel_primary": "whatsapp",
   "channel_artifacts": "email",

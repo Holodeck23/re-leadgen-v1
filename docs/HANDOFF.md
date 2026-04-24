@@ -32,35 +32,20 @@ python3 -c "import json; d=json.load(open('data/property.json')); assert 'UPDATE
 
 Minimum fields required before the sanity check passes: see `docs/setup.md` §2.
 
-### 2. Fix two-phase lead scoring (design bug — silent)
+### 2. ~~Fix two-phase lead scoring~~ DONE
 
-**What breaks:** `lead-qualifier` weights up to 100 points across BANT + behavioral + source. But the landing form collects only `name, phone, interest` — no budget, no timeline, no message body. First-submission scoring ceiling is ~40, which is the `nurture` threshold. Every lead lands in nurture or lower on first submission, even genuinely hot buyers. Quality gate (≥50/100 avg for scale-up) will block every scale decision because no lead starts above 50.
+**Fixed (Strategy B).** `scoring-model.json` now has `initial_phase` config. `lead-qualifier` SKILL.md updated to read `phase: initial | post_contact`. Initial-phase leads get tier overrides based on intent keywords + phone presence (hot = "contact within 2h"), while the full-rubric score is still computed and stored for the quality gate. Post-contact rescoring uses the full BANT rubric.
 
-**Fix:** add `initial_phase_tiers` to `scoring-model.json` and teach `lead-qualifier` to read `phase: initial | post_contact`. Pick one of these strategies:
+### 3. Seed the creative variant library (scaffolded, needs content)
 
-| Strategy | Effort | Trade-off |
-|---|---|---|
-| A. Initial tier thresholds lowered (hot ≥25 / nurture 15–24) | 30 min | Simplest. Post-contact rescoring uses current rubric. |
-| B. Intent-only initial tiering (interest ∈ {lot,unit,investment} + phone → treat as hot for SLA, still score normally for scaling) | 1 h | Best for 2h-SLA enforcement. Quality gate remains accurate. |
-| C. Re-add budget + timeline to form | 2 h | Kills conversion rate. Only if volume is fine and quality is awful. |
+`data/creative-library.jsonl` now exists (empty). `reflective-ops` and `paid-ads` SKILLs updated to read it, handle the empty case (escalate instead of crash), and mark variants as deployed after use.
 
-Recommended: **B**. Hot = "contact them within 2h," not "scale their ad set." Those are different questions.
-
-### 3. Seed the creative variant library
-
-The `refresh_creative` auto-action in `reflective-ops` assumes "pre-approved variant from the creative library." There's no library file and no population mechanism. The action will no-op or fail on first trigger.
-
-**Fix (2 h):**
+**Still needed:** populate with 6 approved variants once `data/property.json` has real content. Run:
 ```bash
-# Generate once against real property.json:
 claude > /skill ad-creative
 # Review outputs for anti-slop (no "nestled in", "boasts", etc.)
-# Persist 6 approved variants:
-cat > data/creative-library.jsonl <<'EOF'
-{"id":"v01","format":"feed","segment":"investor","headline":"…","primary_text":"…","image_ref":"…","status":"approved"}
-# ...5 more lines
-EOF
-# Teach paid-ads SKILL.md to read data/creative-library.jsonl for refresh_creative action.
+# Each line in data/creative-library.jsonl:
+# {"id":"v01","format":"feed","segment":"investor","headline":"…","primary_text":"…","image_ref":"…","status":"approved"}
 ```
 
 ### 4. Verify headless MCP + CAPI before cron
@@ -157,7 +142,7 @@ Nothing in this file is load-bearing forever. The point of the repo is that the 
 - `vendor/marketingskills` pinned at `9125d82` (public OSS).
 - The RE-patched copies under `skills/` deliberately diverge — upstream bumps are a quarterly review task, not a blind pull.
 - The previous weak skills live under `skills-deprecated/` — kept for rationale, not invoked.
-- The worktree used during rebuild (`claude/funny-pike-e8a14e`) is merged to main; it can be removed with `git worktree remove` once you're past this handoff.
+- The worktree used during rebuild (`claude/funny-pike-e8a14e`) has been merged and removed.
 
 ## If you inherit this cold
 

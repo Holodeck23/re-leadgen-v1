@@ -117,7 +117,7 @@ Sort decisions:
 For each auto-approved decision, call the appropriate Meta Ads MCP tool:
 - `pause` → `mcp__meta-ads__update_adset` with `status=PAUSED`.
 - `scale_up` / `scale_down` → `mcp__meta-ads__update_adset_budget`.
-- `refresh_creative` → `mcp__meta-ads__create_ad_creative` + `update_ad` to rotate in pre-approved variant from the creative library.
+- `refresh_creative` → Read `data/creative-library.jsonl` for the next `status: "approved"` variant not yet deployed. If the library is empty or all variants are deployed, set `action=hold` and escalate with note: "Creative library exhausted — run `ad-creative` skill to generate new variants." Otherwise `mcp__meta-ads__create_ad_creative` + `update_ad` to rotate in the variant. Mark the used variant `status: "deployed"` in the library file.
 - `launch_variant` → same as refresh but appends new ad instead of replacing.
 
 After each execution:
@@ -190,5 +190,5 @@ Prefer `hold` over action. The default bias: do less, observe more. Three consec
 
 ## Files this skill reads / writes
 
-- **Reads:** `data/kill-scale-rules.json`, `data/scoring-model.json`, `data/property.json` (via property-context), `data/ad-history.jsonl` (last 50), `data/nurture-sequences.json`, Meta Ads MCP, `scripts/sheet-ops.py quality-by-adset`, `scripts/meta-insights.py`.
+- **Reads:** `data/kill-scale-rules.json`, `data/scoring-model.json`, `data/property.json` (via property-context), `data/ad-history.jsonl` (last 50), `data/nurture-sequences.json`, `data/creative-library.jsonl`, Meta Ads MCP, `scripts/sheet-ops.py quality-by-adset`, `scripts/meta-insights.py`.
 - **Writes:** `data/ad-history.jsonl` (append-only), git commits, stdout briefing.
