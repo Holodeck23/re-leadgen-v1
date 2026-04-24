@@ -94,6 +94,7 @@ Every landing-page link must carry UTM params plus an explicit `adset_id` (the M
 - Reference specific details from `data/property.json` in all ad copy and follow-ups. Never invent a fact.
 - When scoring leads, always explain why in the notes field (≤280 chars).
 - When reporting on campaigns, lead with the number that matters most (CPL or hot-lead count), then context.
+- **Privacy & PII**: Never log personally identifiable information (Name, Phone, Email) to `data/ad-history.jsonl` or git commit messages. Use only the `lead_id` (UUID) or `adset_id`.
 - Budget values from the Meta Ads API are in cents — always convert for display.
 - Every non-trivial ad decision appends to `data/ad-history.jsonl` and gets git-committed by the loop (`ops: YYYY-MM-DD N decisions, $X spend, Y leads, Z hot`).
 - `data/property.json` placeholder check blocks `loop-runner.sh`. Populate before go-live.

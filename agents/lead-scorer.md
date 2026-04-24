@@ -34,12 +34,13 @@ LONG_CYCLE (<40) — {long_cycle_count}
 Batch totals: {total} leads scored, avg score {avg}.
 ```
 
-4. If the caller asked to persist scores, write them via `python scripts/sheet-ops.py import-scores <path>` (batch-updates in one API call).
+4. **Persist scores.** Collect ALL scored records and perform exactly **one** call to `python scripts/sheet-ops.py import-scores <path>` to update the sheet in a single API batch. Never update rows one-by-one.
 
 5. Recommend next: "Invoke `follow-up` skill for hot + nurture leads" (and for `nurture-orchestrator` if any are in ongoing sequences).
 
 ## Rules
 
+- Never update Google Sheets rows one-by-one; always use the batch `import-scores` command.
 - Never deviate from `data/scoring-model.json`. If the rubric feels wrong for a lead, flag it in the output but do not silently adjust.
 - Every scored row must have a `notes` field ≤280 chars, honoring anti-slop rules.
 - If a lead is a duplicate (same phone/email within 30 days, status != "closed"), apply the `duplicate_within_30_days` penalty and set `status=duplicate`.
