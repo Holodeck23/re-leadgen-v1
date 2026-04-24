@@ -95,6 +95,16 @@ Apps Script daily URL-Fetch quota is 20,000/day (paid) or 100/day (free). If you
 ```
 Loop pauses all active ad sets, appends a `brake` event to `data/ad-history.jsonl`, and exits. Reversing is a manual `paid-ads` run — intentional friction.
 
+## First 2 weeks after launch
+
+Advantage+ audience needs ~50 conversion events to converge. With zero conversion history, Meta fires broad, the lead-quality gate holds everything flat, and the loop looks broken. This is expected.
+
+**For the first 2 weeks / first 50 conversion events:**
+- Do NOT use Advantage+ audience
+- Use interest + location constrained targeting: country + real-estate / investment interests + age 25-65
+- Switch to Advantage+ only after Meta has enough signal (you'll see it in the briefing when lead quality stabilizes)
+- Don't panic if the quality gate blocks every scale decision — that's the gate working correctly on thin data
+
 ## Weekly review cadence (30 minutes, Friday)
 
 1. Read the last 7 days of `data/ad-history.jsonl` — do the decisions still make sense?

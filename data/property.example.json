@@ -1,0 +1,77 @@
+{
+  "project_name": "Loma Verde Residences",
+  "location": {
+    "country": "Costa Rica",
+    "region": "Guanacaste",
+    "city": "Tamarindo",
+    "description": "5 minutes from Tamarindo beach, 45 minutes from Liberia international airport. Paved road access, municipal water, fiber internet."
+  },
+  "inventory": {
+    "lots": {
+      "total": 89,
+      "available": 74,
+      "size_range": "500-2000 sqm",
+      "price_range": "$45,000 - $180,000"
+    },
+    "complex_units": {
+      "total": 24,
+      "available": 18,
+      "types": "1BR, 2BR, 3BR",
+      "price_range": "$120,000 - $310,000"
+    }
+  },
+  "deal_structure": {
+    "type": "profit share with property owner",
+    "details": "60/40 split on lot sales after cost recovery. Complex units are a separate JV with fixed 18% developer margin."
+  },
+  "key_selling_points": [
+    "Phase 1 infrastructure 90% complete — roads, water, electric, fiber",
+    "Titled lots with clean chain of title, no concession land",
+    "5-minute drive to Tamarindo, 20 minutes to Flamingo and Potrero beaches"
+  ],
+  "target_audiences": [
+    {
+      "segment": "investors",
+      "hook": "Titled lots from $45k in a market appreciating 12-15% annually. Phase 1 infra is done — build or hold.",
+      "budget_range": "$45,000 - $180,000"
+    },
+    {
+      "segment": "homebuyers",
+      "hook": "Build your home 5 minutes from the beach on a 1000+ sqm lot. Paved roads, fiber internet, municipal water already in.",
+      "budget_range": "$120,000 - $310,000"
+    },
+    {
+      "segment": "retirees",
+      "hook": "Year-round warm climate, low cost of living, easy residency path. Private hospital 30 minutes away.",
+      "budget_range": "$80,000 - $250,000"
+    }
+  ],
+  "amenities": [
+    "Tamarindo beach — 5 min drive",
+    "Liberia international airport (LIR) — 45 min",
+    "CIMA Hospital Liberia — 35 min",
+    "Supermarkets (Auto Mercado, Mega Super) — 8 min",
+    "International schools (La Paz, CRIA) — 15 min",
+    "Golf (Hacienda Pinilla) — 12 min"
+  ],
+  "timeline": {
+    "phase_1": "Infrastructure complete Q2 2026. First 15 lots delivered with road, water, electric, fiber.",
+    "completion": "Full buildout by Q4 2027. Complex units start Q1 2027."
+  },
+  "media": {
+    "photos": [
+      "https://cdn.example.com/loma-verde/hero-aerial.jpg",
+      "https://cdn.example.com/loma-verde/lot-14-view.jpg",
+      "https://cdn.example.com/loma-verde/road-infra.jpg"
+    ],
+    "drone_video": "https://cdn.example.com/loma-verde/drone-apr-2026.mp4",
+    "lot_map": "https://cdn.example.com/loma-verde/lot-map-v3.pdf",
+    "brochure": "https://cdn.example.com/loma-verde/brochure-en.pdf"
+  },
+  "contact": {
+    "sales_name": "Maria Gonzalez",
+    "sales_email": "maria@lomaverde.cr",
+    "sales_phone": "+50688881234",
+    "sales_whatsapp": "50688881234"
+  }
+}
