@@ -61,14 +61,21 @@ if ! command -v claude >/dev/null 2>&1; then
   exit 1
 fi
 
-# Invoke reflective-operator agent non-interactively (-p = print once) with
-# permissions limited to what the agent actually needs.
-PROMPT="Run the reflective-operator agent in mode=${MODE}. Produce the briefing to stdout. Follow the reflective-ops skill exactly."
+# Use a lock file to prevent "split brain" (multiple concurrent loops).
+LOCK_FILE="/tmp/re-leadgen-loop.lock"
 
-claude \
-  --print \
-  --agent reflective-operator \
-  --allowedTools "Read Bash Grep Glob Skill mcp__meta-ads" \
-  <<<"$PROMPT"
+# Invoke reflective-operator agent non-interactively within a lock.
+(
+  flock -n 9 || { log "ERROR: Another loop is already running (lock held). Halting."; exit 1; }
+  
+  PROMPT="Run the reflective-operator agent in mode=${MODE}. Produce the briefing to stdout. Follow the reflective-ops skill exactly."
+
+  claude \
+    --print \
+    --agent reflective-operator \
+    --allowedTools "Read Bash Grep Glob Skill mcp__meta-ads" \
+    <<<"$PROMPT"
+
+) 9>"$LOCK_FILE"
 
 log "Run complete."
