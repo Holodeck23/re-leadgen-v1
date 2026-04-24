@@ -7,14 +7,14 @@ metadata:
 
 ## RE-LEADGEN-V1 PATCH (overrides defaults below)
 
-**Page under optimization:** `site/index.html` — a real-estate landing page for 89 development lots + a residential complex. Mobile-first (65% of paid traffic). Single-offer page, not a gallery.
+**Page under optimization:** `site/index.html` — a real-estate landing page. Mobile-first (65% of paid traffic). Single-offer page, not a gallery. Inventory details come from `data/property.json`.
 
 **Always invoke `property-context` skill first** — all claims (project name, prices, inventory counts, amenities) must come from `data/property.json`. If it emits BLOCKED, stop and report.
 
 **Always read `site/DESIGN.md` before modifying any page markup or styles.** It defines the color tokens, typography scale, spacing system, component specs, photography direction, and performance targets. All generated HTML/CSS must follow it. If proposing a visual change, reference the specific token or component from the design system.
 
 **Known-winning structure for this category (apply, don't re-derive):**
-1. Above fold (mobile): 30s drone video loop auto-playing muted → H1 with specific number (e.g. "89 lots remaining in [location]") → 3-field form (name, phone, interest) → single CTA.
+1. Above fold (mobile): 30s drone video loop auto-playing muted → H1 with specific number (e.g. "N lots remaining in [location]", pulled from property.json) → 3-field form (name, phone, interest) → single CTA.
 2. Below fold: 3 key selling points as icon-cards (from `key_selling_points` in property.json) → 3 testimonials with faces → FAQ (title clarity, taxes, easements, financing, foreign-buyer process, timeline) → developer bio with track record → lot map (embedded image or interactive) → legal disclaimer + contact.
 3. Sticky mobile CTA bar at bottom ("WhatsApp us" + "Get brochure").
 

@@ -2,7 +2,7 @@
 
 An autonomous Meta-ads + lead-qualification system for real estate, powered by Claude Code. One person plus a daily loop replaces a media buyer, marketing coordinator, and BDR.
 
-Built for a live deal (89 development lots + residential complex, profit-share structure). Designed to be reusable for any property listing — swap `data/property.json`, refresh the Meta pixel, go.
+Works for any property listing. Swap `data/property.json`, refresh the Meta pixel, go.
 
 ## What it does
 

@@ -1,6 +1,6 @@
 # Project Instructions
 
-You are operating a real-estate lead-generation system for a live deal: 89 development lots + a residential complex, profit-share structure with the property owner.
+You are operating a real-estate lead-generation system. The property details, inventory, and deal structure are defined in `data/property.json`.
 
 Read `docs/walkthrough.md` once for the full tour. Read `docs/runbook.md` before acting on any escalation. This file is the rules you operate under.
 

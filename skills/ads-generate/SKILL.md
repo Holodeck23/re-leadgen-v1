@@ -23,7 +23,7 @@ user-invokable: false
 **On-brand constraints:**
 - No stock-photo-lifestyle-shot clichés ("couple at sunset holding keys", "family in empty white room"). Use real project imagery when possible.
 - No text over 20% of image area (Meta will throttle).
-- Include 1 number or proof point visually (e.g. "89 lots", "from $Xk", "Phase 1 infra 90% done").
+- Include 1 number or proof point visually (e.g. "N lots available", "from $Xk", "Phase 1 infra 90% done" — pull from property.json).
 
 **Never invent facts in overlay copy** — all numbers, claims, and place names come from `property-context`.
 

@@ -12,7 +12,7 @@ If you want the install steps instead, jump to `docs/setup.md`. If you want the 
 4. [The daily loop — what actually happens](#the-daily-loop--what-actually-happens)
 5. [The lead journey — from ad to sold](#the-lead-journey--from-ad-to-sold)
 6. [File-by-file tour](#file-by-file-tour)
-7. [The two guardrails that keep this from burning money](#the-two-guardrails-that-keep-this-from-burning-money)
+7. [The guardrails that keep this from burning money](#the-guardrails-that-keep-this-from-burning-money)
 8. [How you interact with the system day-to-day](#how-you-interact-with-the-system-day-to-day)
 9. [Extending it](#extending-it)
 
@@ -22,7 +22,7 @@ If you want the install steps instead, jump to `docs/setup.md`. If you want the 
 
 An autonomous Meta-ads + lead-gen operator for a real-estate deal. One person plus a daily loop replaces what would otherwise need a media buyer, a marketing coordinator, and a BDR. The humans do what humans are good at (sales calls, pricing decisions, contracts). The loop does what it is good at (scoring every lead the same way every day, pulling Meta metrics without forgetting a timeframe, pausing an ad with a bad hook rate at 4am, logging every decision so next week's decisions can learn from this week's).
 
-The deal it was built for: 89 development lots + a residential complex, profit-share with the owner. The shape of the system generalises to any property listing — swap `data/property.json`, refresh the Meta pixel, go.
+The system generalises to any property listing — swap `data/property.json`, refresh the Meta pixel, go.
 
 The stack is deliberately simple:
 - **Landing page:** static HTML + JS, reads `property.json` at runtime, three-field lead form.
@@ -246,10 +246,6 @@ Reference only — never edited. When upstream ships something worth taking, bum
 ### `tests/fixtures/`
 
 Two JSON fixtures (`hot_lead_payload.json`, `synthetic_kill_insight.json`) used to dry-run the form validation + scoring pipeline and the kill-rule + quality-gate pipeline without touching live credentials. The Phase 6 verification script uses these.
-
-### `skills-deprecated/`
-
-The three original weak skills (`ad-copy`, `campaign-ops`, `daily-ops`), kept readable as reference for what not to do. Safe to delete once the team is comfortable with the replacements.
 
 ## The guardrails that keep this from burning money
 

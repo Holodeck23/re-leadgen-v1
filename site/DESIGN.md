@@ -111,7 +111,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 │  [fullscreen video/photo with overlay]        │
 │                                               │
 │  ┌─────────┐                                  │
-│  │ badge   │  "89 lots available"             │
+│  │ badge   │  "N lots available"              │
 │  └─────────┘                                  │
 │                                               │
 │  H1: Project Name — City, Country             │
