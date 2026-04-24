@@ -25,6 +25,13 @@ MODE="${1:-full}"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# Source .env if it exists
+if [[ -f .env ]]; then
+  set -a
+  source .env
+  set +a
+fi
+
 ts() { date -u +"%Y-%m-%dT%H:%M:%SZ"; }
 log() { echo "[$(ts)] $*"; }
 

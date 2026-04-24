@@ -104,9 +104,9 @@
   var CALENDLY_URL = 'https://calendly.com/REPLACE_WITH_CALENDLY_HANDLE/15min';
 
   var params = new URLSearchParams(window.location.search);
-  var leadId = params.get('lead_id') || '';
-  var interest = (params.get('interest') || '').toLowerCase();
-  var eventId = params.get('event_id') || leadId || randomId();
+  var leadId = sessionStorage.getItem('rlg_last_lead_id') || params.get('lead_id') || '';
+  var interest = (sessionStorage.getItem('rlg_last_interest') || params.get('interest') || '').toLowerCase();
+  var eventId = sessionStorage.getItem('rlg_last_event_id') || params.get('event_id') || leadId || randomId();
   var isHot = interest === 'lot' || interest === 'unit' || interest === 'investment';
 
   if (PIXEL_ID && PIXEL_ID !== 'PIXEL_ID') {
