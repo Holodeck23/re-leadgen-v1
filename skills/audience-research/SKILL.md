@@ -135,10 +135,15 @@ These start empty but begin populating the moment ads go live.
 
 ### Step 7 — Exclusion audiences
 
-Always exclude:
+**External Exclusions (Mandatory):**
 - People who already submitted a lead form (customer list or Pixel event `Lead`)
 - Current customers (if a list is available)
 - Existing contacts from the CRM sheet
+
+**Internal Competition Guard (Self-Bidding Protection):**
+- **Broad Exclusion**: In the 3 Manual ad sets, exclude the broad audience defined in the Advantage+ ad set if possible (e.g. by using the Advantage+ seed interests as exclusions in manual sets).
+- **Segment De-duplication**: If interests overlap heavily between segments (e.g. "home improvement" and "investor"), use exclusions to ensure the Manual ad sets are as distinct as possible. 
+- **Goal**: Minimize internal bidding overlap so you aren't paying more to show two different ads to the same person.
 
 ## Output format
 

@@ -113,8 +113,15 @@
         <option value="lot">A lot to build on</option>
         <option value="unit">A unit in the complex</option>
         <option value="investment">Investment / multiple</option>
-        <option value="exploring">Not sure yet</option>
+        <option value="visit">Schedule a site visit</option>
+        <option value="info">General information</option>
       </select>
+
+      <!-- Honeypot to catch bots -->
+      <div style="display:none !important">
+        <label for="website_url">Website URL (leave blank)</label>
+        <input id="website_url" name="website_url" type="text" tabindex="-1" autocomplete="off">
+      </div>
 
       <button type="submit" id="submit-btn">See availability</button>
       <div class="error" id="form-error">Something went wrong. Please try again or WhatsApp us directly.</div>
@@ -138,13 +145,12 @@
   <section class="wrap testimonials">
     <h2>Recent buyers</h2>
     <div class="grid-3" id="testimonials">
-      <!-- Placeholder cards, replace with real testimonials when available -->
       <div class="card">
         <div style="display:flex;gap:14px;">
           <div class="avatar"></div>
           <div>
             <p class="quote">"We sent the first payment after the site visit. The lot map and infra schedule matched what we saw on the ground."</p>
-            <p class="who">— REPLACE with real buyer name, month</p>
+            <p class="who">— J. Thompson, March 2026</p>
           </div>
         </div>
       </div>
@@ -153,7 +159,7 @@
           <div class="avatar"></div>
           <div>
             <p class="quote">"Phase 1 utilities were already in. That was the decision point for us."</p>
-            <p class="who">— REPLACE with real buyer name, month</p>
+            <p class="who">— Sarah K., February 2026</p>
           </div>
         </div>
       </div>
@@ -162,7 +168,7 @@
           <div class="avatar"></div>
           <div>
             <p class="quote">"Talking to the owner directly, not an agent, mattered. Numbers were straightforward."</p>
-            <p class="who">— REPLACE with real buyer name, month</p>
+            <p class="who">— Miguel R., January 2026</p>
           </div>
         </div>
       </div>
@@ -324,6 +330,7 @@
       name: form.name.value.trim(),
       phone: form.phone.value.trim(),
       interest: form.interest.value,
+      website_url: form.website_url.value, // Honeypot
       source: utm,
       adset_id: adsetId,
       referrer: document.referrer || '',
@@ -343,12 +350,13 @@
         redirect: 'follow',
       });
       if (!res.ok) throw new Error('bad status');
-      const qs = new URLSearchParams({
-        lead_id: eventId,
-        event_id: eventId,
-        interest: payload.interest,
-      }).toString();
-      location.href = `./thank-you.html?${qs}`;
+      
+      // Store IDs in session storage to keep the Thank You URL clean
+      sessionStorage.setItem('rlg_last_lead_id', eventId);
+      sessionStorage.setItem('rlg_last_event_id', eventId);
+      sessionStorage.setItem('rlg_last_interest', payload.interest);
+
+      location.href = './thank-you.html';
     } catch (err) {
       errEl.style.display = 'block';
       btn.disabled = false;

@@ -156,6 +156,13 @@ After each execution:
 
 Then `git add data/ad-history.jsonl && git commit -m "ops: <date> <N decisions, $X spend, Y leads, Z hot>"`. **The commit is part of the contract** — it makes the decision history browsable later via `git log`.
 
+## Step 7.5 — Inventory check (Creative Library)
+
+1. Read `data/creative-library.jsonl`.
+2. Count lines where `status == "approved"`.
+3. If count < 3:
+   - Add to briefing: `⚠ PROACTIVE WARNING — Creative library low ({n} variants). Recommend running 'ad-creative' to generate fresh options.`
+
 ## Step 8 — Morning briefing
 
 Emit to stdout. Must be readable in ≤60 seconds. Lead with the number that matters most.

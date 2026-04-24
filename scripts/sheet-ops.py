@@ -59,6 +59,9 @@ class AdSetQuality:
     qualified_rate: float
 
 
+LIMIT_LEADS = 1000
+
+
 def get_sheet() -> "gspread.Worksheet":
     key_file = os.environ.get("GOOGLE_SHEETS_KEY_FILE")
     sheet_id = os.environ.get("LEAD_SHEET_ID")
@@ -71,16 +74,25 @@ def get_sheet() -> "gspread.Worksheet":
 
 def get_new_leads() -> list[dict[str, Any]]:
     sheet = get_sheet()
-    records = sheet.get_all_records()
+    # Read the last N rows instead of the entire sheet for performance
+    last_row = sheet.row_count
+    if last_row > LIMIT_LEADS:
+        records = sheet.get_all_records(head=1, offset=last_row - LIMIT_LEADS)
+    else:
+        records = sheet.get_all_records()
     return [r for r in records if str(r.get("status", "")).lower() == "new"]
 
 
 def get_all_leads() -> list[dict[str, Any]]:
-    return get_sheet().get_all_records()
+    sheet = get_sheet()
+    last_row = sheet.row_count
+    if last_row > LIMIT_LEADS:
+        return sheet.get_all_records(head=1, offset=last_row - LIMIT_LEADS)
+    return sheet.get_all_records()
 
 
 def get_leads_due_followup() -> list[dict[str, Any]]:
-    records = get_sheet().get_all_records()
+    records = get_all_leads()
     today = datetime.now().strftime("%Y-%m-%d")
     excluded = {"closed", "cold", "lost", "duplicate"}
     return [
@@ -158,7 +170,9 @@ def quality_by_adset(window_days: int = 14, hot_threshold: int = 70, qualified_t
     Output feeds the reflective-ops lead-quality gate.
     """
     records = get_all_leads()
-    cutoff = datetime.now() - timedelta(days=window_days)
+    # 1-day attribution buffer: We look back window_days + 1 to account for 
+    # leads who clicked an ad yesterday but submitted the form today.
+    cutoff = datetime.now() - timedelta(days=window_days + 1)
 
     buckets: dict[str, list[int]] = defaultdict(list)
     for r in records:

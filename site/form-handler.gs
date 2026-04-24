@@ -69,6 +69,12 @@ function doGet(e) {
 /* ---------------- new_lead flow ---------------- */
 
 function handleNewLead_(payload) {
+  // Honeypot check
+  if (payload.website_url) {
+    console.warn('Bot detected via honeypot');
+    return json_({ status: 'ok', lead_id: 'bot' }); // Silent fail for bots
+  }
+
   var cleaned = validate_(payload);
   if (cleaned.error) {
     return json_({ status: 'error', error: cleaned.error });
@@ -188,7 +194,7 @@ function validate_(p) {
     interest: interest,
     source: String(p.source || 'direct').slice(0, 500),
     referrer: String(p.referrer || '').slice(0, 500),
-    return_visitor: String(p.return_visitor || 'false'),
+    return_visitor: !!p.return_visitor,
     submitted_at: String(p.submitted_at || '').slice(0, 40),
     event_id: String(p.event_id || Utilities.getUuid()).slice(0, 64),
     adset_id: String(p.adset_id || '').slice(0, 40),
