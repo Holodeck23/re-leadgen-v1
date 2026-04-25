@@ -128,7 +128,7 @@ Every 2 hours 08:00–20:00, a lighter `hot_sweep` mode runs steps 3 and 9 only 
 
 An ad sends a visitor to the landing page with UTM params. `site/index.html`:
 - Fetches `property.json` at runtime and hydrates every price, inventory count, location, amenity, photo, and contact link.
-- Fires the Meta Pixel `PageView` event and `ViewContent` when the visitor scrolls past the hero.
+- Fires the Meta Pixel `PageView` event on load.
 - Captures the `adset_id` URL param (set by Meta's `{{adset.id}}` macro), the UTM params, `document.referrer`, a `rlg_visited` localStorage flag, and the `user_agent` / `page` URL for the Conversions API payload.
 - Generates a `crypto.randomUUID()` event ID that will deduplicate the Pixel event against the server-side CAPI event later.
 
@@ -138,7 +138,7 @@ The form has exactly three visible fields: name, phone (WhatsApp preferred), and
 - Validates: name ≥2 chars and contains no URL; phone ≥8 digits after stripping non-digits; interest in the known set.
 - Deduplicates: if the same phone (digit-normalised) submitted within the last 30 days and the status isn't `closed` or `lost`, sets `status=duplicate` instead of `new`.
 - Writes the row: name, phone, interest, UTM source (pipe-delimited), and a notes field containing the lead ID (== event ID), return-visitor flag, and `adset_id` when present.
-- Fires a real-time webhook to `HOT_LEAD_WEBHOOK_URL` if the interest is `lot`, `unit`, or `investment`.
+- Fires a real-time webhook to `HOT_LEAD_WEBHOOK_URL` if the interest is `lot`, `unit`, `investment`, or `visit`.
 - Fires a server-side Meta Conversions API `Lead` event (hashed phone + hashed `external_id` + `user_agent`) with the same `event_id` the browser Pixel used — so client and server events dedup in Events Manager.
 - Returns `{status, lead_id, event_id}` to the landing page, which redirects to `site/thank-you.html?lead_id=…&event_id=…&interest=…`.
 

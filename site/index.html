@@ -23,8 +23,8 @@
 
   <style>
     :root {
-      --fg: #111;
-      --muted: #555;
+      --fg: #1a1a1a;
+      --muted: #666660;
       --bg: #fafaf7;
       --card: #fff;
       --accent: #8a6d2a;
@@ -278,7 +278,22 @@
     setHref('sales_email_link', contact.sales_email ? `mailto:${contact.sales_email}` : '');
     const waDigits = (contact.sales_whatsapp || '').replace(/[^\d]/g, '');
     setHref('sales_whatsapp_link', waDigits ? `https://wa.me/${waDigits}` : '');
-    if (media.drone_video) setSrc('drone_video', media.drone_video);
+    const heroVideo = document.querySelector('.hero video');
+    const fallbackImg = document.querySelector('.hero .fallback');
+    if (media.drone_video) {
+      setSrc('drone_video', media.drone_video);
+      // If video fails to load, show the fallback photo
+      if (heroVideo) {
+        heroVideo.addEventListener('error', () => {
+          heroVideo.style.display = 'none';
+          if (fallbackImg) { fallbackImg.style.display = 'block'; }
+        });
+      }
+    } else if (fallbackImg) {
+      // No video provided — show fallback photo immediately
+      if (heroVideo) heroVideo.style.display = 'none';
+      fallbackImg.style.display = 'block';
+    }
     if (Array.isArray(media.photos) && media.photos[0]) setSrc('photo_hero', media.photos[0]);
 
     const list = document.getElementById('selling-points-list');
@@ -352,16 +367,30 @@
       });
       if (!res.ok) throw new Error('bad status');
       
-      // Store IDs in session storage to keep the Thank You URL clean
+      // Store in sessionStorage (primary) + URL params (fallback for incognito/crashes)
       sessionStorage.setItem('rlg_last_lead_id', eventId);
       sessionStorage.setItem('rlg_last_event_id', eventId);
       sessionStorage.setItem('rlg_last_interest', payload.interest);
 
-      location.href = './thank-you.html';
+      const tyUrl = new URL('./thank-you.html', location.href);
+      tyUrl.searchParams.set('lead_id', eventId);
+      tyUrl.searchParams.set('event_id', eventId);
+      tyUrl.searchParams.set('interest', payload.interest);
+      location.href = tyUrl.toString();
     } catch (err) {
-      errEl.style.display = 'block';
       btn.disabled = false;
       btn.textContent = 'See availability';
+      // Show WhatsApp fallback if available (form handler may be down)
+      const waLink = document.getElementById('mobile-wa');
+      const waHref = waLink && waLink.href !== '#' ? waLink.href : '';
+      if (waHref) {
+        const msg = encodeURIComponent('Hi, I just tried the form but it had an error. I\'m ' + payload.name + ', interested in ' + payload.interest + '. Phone: ' + payload.phone);
+        const waUrl = waHref.split('?')[0] + '?text=' + msg;
+        errEl.innerHTML = 'The form hit an error. <a href="' + waUrl + '" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:underline;">WhatsApp us directly</a> instead.';
+      } else {
+        errEl.textContent = 'Something went wrong. Please try again or WhatsApp us directly.';
+      }
+      errEl.style.display = 'block';
     }
   });
 })();

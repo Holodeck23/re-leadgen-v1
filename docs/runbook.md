@@ -52,7 +52,7 @@ If the loop keeps holding an ad set you want to scale:
 
 ## Hot-lead response SLA
 
-The system promises WhatsApp contact within 2 hours for any lead with `status=new` and hot-intent `interest` (lot / unit / investment). This is enforced two ways:
+The system promises WhatsApp contact within 2 hours for any lead with `status=new` and hot-intent `interest` (lot / unit / investment / visit). This is enforced two ways:
 
 - `form-handler.gs` fires a real-time webhook to the endpoint set in script properties.
 - The 2-hourly `hot_sweep` mode surfaces new hot leads with an `ALERT:` banner.

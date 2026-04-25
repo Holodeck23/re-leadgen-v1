@@ -190,13 +190,15 @@ if [[ -f site/index.html ]]; then
   else
     pass "site/index.html has Pixel ID configured"
   fi
-  # Check for leftover REPLACE placeholders in testimonials or other content
-  replace_count=$(grep -c 'REPLACE' site/index.html 2>/dev/null || true)
-  if [[ "$replace_count" -gt 0 ]]; then
-    warn "site/index.html has ${replace_count} leftover REPLACE placeholder(s)"
-    echo "       → Search for REPLACE in index.html and fill in real content"
+  # Check for leftover REPLACE placeholders across both pages
+  replace_index=$(grep -c 'REPLACE' site/index.html 2>/dev/null || true)
+  replace_ty=$(grep -c 'REPLACE' site/thank-you.html 2>/dev/null || true)
+  replace_total=$((replace_index + replace_ty))
+  if [[ "$replace_total" -gt 0 ]]; then
+    warn "${replace_total} leftover REPLACE placeholder(s) across site files (index: ${replace_index}, thank-you: ${replace_ty})"
+    echo "       → Search for REPLACE in site/*.html and fill in real values (Calendly handle, etc.)"
   else
-    pass "No leftover REPLACE placeholders in index.html"
+    pass "No leftover REPLACE placeholders in site files"
   fi
   # Pixel dedup sanity check: same Pixel ID should be used in both pages
   if [[ -f site/thank-you.html ]]; then
