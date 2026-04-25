@@ -40,7 +40,7 @@ STATUS_VALUES: tuple[str, ...] = (
 )
 
 INTEREST_VALUES: tuple[str, ...] = (
-    "lot", "unit", "investment", "information", "other",
+    "lot", "unit", "investment", "visit", "exploring", "info",
 )
 
 HEADER_COLOR = {"red": 0.14, "green": 0.14, "blue": 0.14}

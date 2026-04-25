@@ -31,7 +31,7 @@
  */
 
 var DEDUP_WINDOW_DAYS = 30;
-var HOT_INTERESTS = ['lot', 'unit', 'investment'];
+var HOT_INTERESTS = ['lot', 'unit', 'investment', 'visit'];
 
 var COL = {
   timestamp: 1,
@@ -184,7 +184,7 @@ function validate_(p) {
   var digits = phone.replace(/\D+/g, '');
   if (digits.length < 8) return { error: 'phone_invalid' };
 
-  var validInterests = ['lot', 'unit', 'investment', 'visit', 'info'];
+  var validInterests = ['lot', 'unit', 'investment', 'visit', 'exploring', 'info'];
   if (validInterests.indexOf(interest) === -1) interest = 'info';
 
   return {

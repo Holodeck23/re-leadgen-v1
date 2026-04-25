@@ -98,6 +98,7 @@ Every landing-page link must carry UTM params plus an explicit `adset_id` (the M
 - Budget values from the Meta Ads API are in cents — always convert for display.
 - Every non-trivial ad decision appends to `data/ad-history.jsonl` and gets git-committed by the loop (`ops: YYYY-MM-DD N decisions, $X spend, Y leads, Z hot`).
 - `data/property.json` placeholder check blocks `loop-runner.sh`. Populate before go-live.
+- `data/launch-config.json` contains Meta credentials and MUST stay in `.gitignore`. Verify with `preflight.sh`.
 
 ## If in doubt
 

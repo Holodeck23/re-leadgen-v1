@@ -8,11 +8,11 @@
 <link rel="icon" href="data:," />
 <style>
   :root {
-    --fg: #111;
-    --muted: #555;
-    --bg: #fff;
-    --accent: #0a7;
-    --line: #e6e6e6;
+    --fg: #1a1a1a;
+    --muted: #666660;
+    --bg: #fafaf7;
+    --accent: #8a6d2a;
+    --line: #e6e1d4;
     --radius: 10px;
   }
   *, *::before, *::after { box-sizing: border-box; }
@@ -107,7 +107,7 @@
   var leadId = sessionStorage.getItem('rlg_last_lead_id') || params.get('lead_id') || '';
   var interest = (sessionStorage.getItem('rlg_last_interest') || params.get('interest') || '').toLowerCase();
   var eventId = sessionStorage.getItem('rlg_last_event_id') || params.get('event_id') || leadId || randomId();
-  var isHot = interest === 'lot' || interest === 'unit' || interest === 'investment';
+  var isHot = interest === 'lot' || interest === 'unit' || interest === 'investment' || interest === 'visit';
 
   if (PIXEL_ID && PIXEL_ID !== 'PIXEL_ID') {
     fbq('init', PIXEL_ID);
