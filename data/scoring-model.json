@@ -102,7 +102,7 @@
         "description": "First form submission. Tier is determined by intent signals, not score. Score is still computed for quality-gate purposes.",
         "tier_overrides": {
           "hot_if": {
-            "interest_in": ["lot", "unit", "investment", "specific lot", "buy", "purchase", "ready"],
+            "interest_in": ["lot", "unit", "investment", "visit", "specific lot", "buy", "purchase", "ready"],
             "phone_provided": true,
             "override_tier": "hot",
             "override_sla_hours": 2,

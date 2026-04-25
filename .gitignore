@@ -5,4 +5,4 @@ __pycache__/
 *.log
 .DS_Store
 data/property.json
-# data/launch-config.json - Keep this for learning phase state recovery
+data/launch-config.json

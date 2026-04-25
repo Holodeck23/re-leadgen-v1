@@ -190,6 +190,25 @@ if [[ -f site/index.html ]]; then
   else
     pass "site/index.html has Pixel ID configured"
   fi
+  # Check for leftover REPLACE placeholders in testimonials or other content
+  replace_count=$(grep -c 'REPLACE' site/index.html 2>/dev/null || true)
+  if [[ "$replace_count" -gt 0 ]]; then
+    warn "site/index.html has ${replace_count} leftover REPLACE placeholder(s)"
+    echo "       → Search for REPLACE in index.html and fill in real content"
+  else
+    pass "No leftover REPLACE placeholders in index.html"
+  fi
+  # Pixel dedup sanity check: same Pixel ID should be used in both pages
+  if [[ -f site/thank-you.html ]]; then
+    index_pixel=$(grep -oP "(?:var PIXEL_ID = '|fbq\('init', ')[^']+" site/index.html 2>/dev/null | head -1)
+    ty_pixel=$(grep -oP "(?:var PIXEL_ID = '|fbq\('init', ')[^']+" site/thank-you.html 2>/dev/null | head -1)
+    if [[ -n "$index_pixel" && -n "$ty_pixel" && "$index_pixel" != "$ty_pixel" ]]; then
+      warn "Pixel ID mismatch: index.html (${index_pixel}) vs thank-you.html (${ty_pixel})"
+      echo "       → Both pages should use the same Meta Pixel ID"
+    elif [[ -n "$index_pixel" && -n "$ty_pixel" ]]; then
+      pass "Pixel ID consistent across index.html and thank-you.html"
+    fi
+  fi
 else
   fail "site/index.html missing"
 fi
