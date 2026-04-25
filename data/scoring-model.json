@@ -109,7 +109,7 @@
             "note": "Initial-phase hot: high-intent interest + phone provided. Full score deferred to post-contact."
           },
           "nurture_if": {
-            "interest_in": ["information", "info", "learn more", "curious", "exploring", "general"],
+            "interest_in": ["info", "exploring", "learn more", "curious", "general"],
             "phone_provided": true,
             "override_tier": "nurture",
             "override_sla_hours": 24,

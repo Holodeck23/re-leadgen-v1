@@ -121,13 +121,22 @@
 
   if (isHot) {
     document.getElementById('hot-block').classList.remove('hidden');
-    document.getElementById('headline').textContent = "Thanks. Let's get you on a call.";
-    document.getElementById('subhead').textContent = 'Based on what you told us, we want to walk you through the specific lots or units that fit. Pick a slot or message us now.';
+    if (interest === 'visit') {
+      document.getElementById('headline').textContent = "Thanks. Let's schedule your visit.";
+      document.getElementById('subhead').textContent = "We'll reach out by WhatsApp to set up a date and share the lot map so you know exactly what you're seeing.";
+    } else {
+      document.getElementById('headline').textContent = "Thanks. Let's get you on a call.";
+      document.getElementById('subhead').textContent = 'Based on what you told us, we want to walk you through the specific lots or units that fit. Pick a slot or message us now.';
+    }
     loadCalendly();
     loadWhatsAppFromProperty();
   }
 
   var form = document.getElementById('email-form');
+  // No leadId = direct navigation without form submit. Hide email form (it can't work without a lead_id).
+  if (!leadId) {
+    document.getElementById('warm-block').style.display = 'none';
+  }
   form.addEventListener('submit', onEmailSubmit);
 
   function onEmailSubmit(ev) {
@@ -156,10 +165,11 @@
 
     fetch(FORM_HANDLER_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    }).then(function () {
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    }).then(function (res) {
+      if (!res.ok) throw new Error('bad status');
       statusEl.innerHTML = '<span class="ok">Sent. Check your inbox in a few minutes.</span>';
       if (window.fbq && PIXEL_ID && PIXEL_ID !== 'PIXEL_ID') {
         fbq('track', 'CompleteRegistration', { content_name: 'email_capture' }, { eventID: eventId });

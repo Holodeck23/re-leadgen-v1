@@ -55,9 +55,42 @@ for v in "${required_vars[@]}"; do
   fi
 done
 
-# Daily budget preflight: if today's Meta spend is within 10% of cap, downgrade to emergency_brake.
+# Daily budget preflight: if today's Meta spend is within cap_headroom_pct of cap, downgrade to emergency_brake.
 CAP_USD=$(python3 -c "import json; print(json.load(open('data/kill-scale-rules.json'))['targets']['daily_budget_cap_usd'])")
-log "Daily budget cap: \$${CAP_USD}"
+HEADROOM_PCT=$(python3 -c "import json; print(json.load(open('data/kill-scale-rules.json'))['targets']['cap_headroom_pct'])")
+log "Daily budget cap: \$${CAP_USD} (headroom: ${HEADROOM_PCT}%)"
+
+if [[ -n "${META_ACCESS_TOKEN:-}" ]] && [[ -n "${META_AD_ACCOUNT_ID:-}" ]]; then
+  SPEND_TODAY=$(python3 scripts/meta-insights.py 2>/dev/null \
+    | python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    total = sum(
+        tf.get('spend', 0)
+        for a in data.get('adsets', [])
+        for tf in [a.get('timeframes', {}).get('today', {})]
+        if not tf.get('empty')
+    )
+    print(f'{total:.2f}')
+except Exception:
+    print('')
+" 2>/dev/null || echo "")
+
+  if [[ -n "$SPEND_TODAY" ]] && [[ "$SPEND_TODAY" != "" ]]; then
+    THRESHOLD=$(python3 -c "print(round(${CAP_USD} * (1.0 - ${HEADROOM_PCT} / 100.0), 2))")
+    if python3 -c "import sys; sys.exit(0 if float('${SPEND_TODAY}') >= float('${THRESHOLD}') else 1)" 2>/dev/null; then
+      log "WARN: Today's spend (\$${SPEND_TODAY}) is at or above \$${THRESHOLD} threshold. Downgrading to emergency_brake."
+      MODE="emergency_brake"
+    else
+      log "Today's spend: \$${SPEND_TODAY} (threshold: \$${THRESHOLD})"
+    fi
+  else
+    log "WARN: Could not fetch today's spend from Meta. Relying on reflective-ops for cap enforcement."
+  fi
+else
+  log "WARN: META_ACCESS_TOKEN or META_AD_ACCOUNT_ID not set — skipping spend check. Relying on reflective-ops for cap enforcement."
+fi
 
 # -- invoke the agent --
 
