@@ -145,3 +145,8 @@ Or do it manually: `docs/HANDOFF.md` has the full 10-step guide. `docs/walkthrou
 2. Refresh the Meta Pixel ID in `site/` files
 3. Open Claude Code and say "Launch my campaigns" — the campaign launcher handles audience research, creative generation, campaign structure, and go-live
 4. Everything else adapts — skills read from property.json
+
+
+---
+
+&copy; 2025 Holodeck23. All rights reserved. Source code available for reference only. No license is granted to use, copy, modify, or distribute this code without explicit written permission.
