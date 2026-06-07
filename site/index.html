@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-bind="title">Lots available — full project details</title>
+  <meta name="description" content="Development lots and residential units. Ask about availability, pricing, and Phase 1 timeline.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" data-bind="og_title" content="Lots available">
+  <meta property="og:description" data-bind="og_description" content="Ask for the brochure and Phase 1 timeline.">
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    // TODO: replace PIXEL_ID with real pixel id after Meta account setup
+    fbq('init', 'PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+
+  <style>
+    :root {
+      --fg: #1a1a1a;
+      --muted: #666660;
+      --bg: #fafaf7;
+      --card: #fff;
+      --accent: #8a6d2a;
+      --line: #e6e1d4;
+      --radius: 10px;
+      --max: 1040px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--fg); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    img, video { max-width: 100%; display: block; }
+    .wrap { max-width: var(--max); padding: 24px; margin: 0 auto; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero { position: relative; min-height: 78vh; color: #fff; overflow: hidden; background: #1a1a1a; }
+    .hero video, .hero .fallback { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%); }
+    .hero .content { position: relative; z-index: 1; padding: 32px 24px; max-width: var(--max); margin: 0 auto; }
+    .badge { display: inline-block; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 999px; font-size: 13px; letter-spacing: 0.02em; backdrop-filter: blur(4px); }
+    .hero h1 { font-size: clamp(28px, 6vw, 46px); line-height: 1.15; margin: 14px 0 10px; max-width: 20ch; }
+    .hero p.sub { font-size: clamp(16px, 2.4vw, 19px); max-width: 44ch; color: #f2efe8; }
+
+    /* Form card */
+    form.lead-form { background: var(--card); color: var(--fg); border-radius: var(--radius); padding: 20px; margin-top: 22px; max-width: 440px; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+    .lead-form h2 { font-size: 18px; margin-bottom: 4px; }
+    .lead-form .hint { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .lead-form label { display: block; font-size: 13px; font-weight: 600; margin-top: 10px; margin-bottom: 4px; }
+    .lead-form input, .lead-form select { width: 100%; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 16px; background: #fff; }
+    .lead-form input:focus, .lead-form select:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+    .lead-form button { width: 100%; margin-top: 14px; padding: 13px; background: var(--accent); color: #fff; border: 0; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+    .lead-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .lead-form .privacy { color: var(--muted); font-size: 12px; margin-top: 10px; }
+    .lead-form .error { color: #b00020; font-size: 13px; margin-top: 8px; display: none; }
+
+    /* Sections */
+    section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+    section h2 { font-size: clamp(22px, 3.5vw, 28px); margin-bottom: 18px; }
+    .grid-3 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--card); padding: 18px; border-radius: var(--radius); border: 1px solid var(--line); }
+    .num { font-size: 28px; font-weight: 700; color: var(--accent); }
+
+    .faq details { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .faq p { color: var(--muted); margin-top: 8px; }
+
+    .testimonials .card { display: flex; gap: 14px; align-items: flex-start; }
+    .testimonials .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--line); flex-shrink: 0; object-fit: cover; }
+    .testimonials .quote { font-style: italic; color: var(--fg); }
+    .testimonials .who { color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+    footer { padding: 32px 0 90px; color: var(--muted); font-size: 14px; }
+    footer p + p { margin-top: 6px; }
+
+    /* Sticky mobile CTA */
+    .mobile-cta { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--line); padding: 10px 12px; display: none; gap: 8px; z-index: 10; }
+    .mobile-cta a { flex: 1; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; }
+    .mobile-cta .wa { background: #25d366; color: #fff; }
+    .mobile-cta .call { background: var(--accent); color: #fff; }
+    @media (max-width: 720px) { .mobile-cta { display: flex; } footer { padding-bottom: 140px; } }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <video data-src="drone_video" autoplay muted loop playsinline poster=""></video>
+  <img class="fallback" data-src="photo_hero" alt="" style="display:none">
+  <div class="content wrap">
+    <span class="badge"><span data-bind="lots_available">89</span> lots available</span>
+    <h1 data-bind="hero_h1">Development lots and units — ask for availability and pricing.</h1>
+    <p class="sub" data-bind="hero_sub">Tell us what you're looking for and we'll send the brochure, lot map, and Phase 1 timeline by WhatsApp within 2 hours.</p>
+
+    <form class="lead-form" id="lead-form" novalidate>
+      <h2>See availability</h2>
+      <div class="hint">3 quick fields. We'll reply on WhatsApp with the brochure.</div>
+
+      <label for="name">Your name</label>
+      <input id="name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80">
+
+      <label for="phone">Phone (WhatsApp preferred)</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" required inputmode="tel" minlength="8" maxlength="25" placeholder="+1 555 555 5555">
+
+      <label for="interest">What you're looking for</label>
+      <select id="interest" name="interest" required>
+        <option value="">Select one</option>
+        <option value="lot">A lot to build on</option>
+        <option value="unit">A unit in the complex</option>
+        <option value="investment">Investment / multiple</option>
+        <option value="visit">Schedule a site visit</option>
+        <option value="info">General information</option>
+        <option value="exploring">Not sure yet / exploring</option>
+      </select>
+
+      <!-- Honeypot to catch bots -->
+      <div style="display:none !important">
+        <label for="website_url">Website URL (leave blank)</label>
+        <input id="website_url" name="website_url" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" id="submit-btn">See availability</button>
+      <div class="error" id="form-error">Something went wrong. Please try again or WhatsApp us directly.</div>
+      <p class="privacy">Your info goes to the sales contact only. No spam.</p>
+    </form>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap">
+    <h2>Why this project</h2>
+    <div class="grid-3" id="selling-points">
+      <div class="card"><div class="num">89</div><p>Development lots</p></div>
+      <div class="card"><div class="num" data-bind="units_total">—</div><p>Residential units</p></div>
+      <div class="card"><div class="num" data-bind="price_entry">—</div><p>Entry price</p></div>
+    </div>
+    <ul id="selling-points-list" style="margin-top: 18px; list-style: none;"></ul>
+  </section>
+
+  <section class="wrap testimonials">
+    <h2>Recent buyers</h2>
+    <div class="grid-3" id="testimonials">
+      <div class="card">
+        <div style="display:flex;gap:14px;">
+          <div class="avatar"></div>
+          <div>
+            <p class="quote">"We sent the first payment after the site visit. The lot map and infra schedule matched what we saw on the ground."</p>
+            <p class="who">— J. Thompson, March 2026</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:14px;">
+          <div class="avatar"></div>
+          <div>
+            <p class="quote">"Phase 1 utilities were already in. That was the decision point for us."</p>
+            <p class="who">— Sarah K., February 2026</p>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:14px;">
+          <div class="avatar"></div>
+          <div>
+            <p class="quote">"Talking to the owner directly, not an agent, mattered. Numbers were straightforward."</p>
+            <p class="who">— Miguel R., January 2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap faq">
+    <h2>Common questions</h2>
+    <details><summary>Title and ownership</summary><p data-bind="faq_title">Titles are issued in the buyer's name. We send the title chain and any liens or easements for review before deposit. Foreign buyers: confirmation will explain the exact ownership vehicle.</p></details>
+    <details><summary>Taxes and recurring costs</summary><p data-bind="faq_taxes">Property tax is paid annually to the local municipality. HOA covers road maintenance, security, and common areas. Rates are in the brochure.</p></details>
+    <details><summary>Financing</summary><p data-bind="faq_financing">Cash and bank-financed buyers welcome. Owner financing available on a case-by-case basis with 30–40% down. Ask for terms in WhatsApp.</p></details>
+    <details><summary>Timeline</summary><p data-bind="faq_timeline">Phase 1 infrastructure is in progress. See the project timeline block below for current milestones.</p></details>
+    <details><summary>Site visits</summary><p data-bind="faq_visits">On request. Send your preferred dates and we'll coordinate. Drone footage and lot map available before the visit.</p></details>
+  </section>
+
+  <section class="wrap">
+    <h2>Project timeline</h2>
+    <div class="card">
+      <p><strong>Phase 1:</strong> <span data-bind="phase_1">—</span></p>
+      <p style="margin-top: 8px;"><strong>Completion:</strong> <span data-bind="completion">—</span></p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>Contact</h2>
+    <div class="card">
+      <p><strong><span data-bind="sales_name">Sales contact</span></strong></p>
+      <p>WhatsApp: <a data-bind-href="sales_whatsapp_link" href="#"><span data-bind="sales_whatsapp">—</span></a></p>
+      <p>Email: <a data-bind-href="sales_email_link" href="#"><span data-bind="sales_email">—</span></a></p>
+      <p>Phone: <a data-bind-href="sales_phone_link" href="#"><span data-bind="sales_phone">—</span></a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p data-bind="project_name">Project name</p>
+  <p data-bind="legal">Listings subject to availability. Pricing and terms subject to change. This is not an offer to sell real estate; details are provided for informational purposes.</p>
+</footer>
+
+<nav class="mobile-cta" aria-label="Quick contact">
+  <a class="wa" id="mobile-wa" href="#">WhatsApp</a>
+  <a class="call" id="mobile-call" href="#">Call</a>
+</nav>
+
+<script>
+(() => {
+  const FORM_HANDLER_URL = 'https://script.google.com/macros/s/REPLACE_WITH_DEPLOYED_APPS_SCRIPT_URL/exec';
+  const PROPERTY_URL = './property.json';
+
+  // --- property.json hydration ---
+  const pickEntryPrice = (priceRange) => {
+    if (!priceRange || typeof priceRange !== 'string') return '';
+    const m = priceRange.match(/\$[\d,]+/);
+    return m ? `from ${m[0]}` : priceRange;
+  };
+
+  const setBind = (key, value) => {
+    document.querySelectorAll(`[data-bind="${key}"]`).forEach(el => {
+      if (value !== null && value !== undefined && value !== '') el.textContent = value;
+    });
+  };
+  const setHref = (key, value) => {
+    document.querySelectorAll(`[data-bind-href="${key}"]`).forEach(el => {
+      if (value) el.setAttribute('href', value);
+    });
+  };
+  const setSrc = (key, value) => {
+    document.querySelectorAll(`[data-src="${key}"]`).forEach(el => {
+      if (value) { el.setAttribute('src', value); }
+    });
+  };
+
+  fetch(PROPERTY_URL).then(r => r.ok ? r.json() : null).then(data => {
+    if (!data) return;
+    const unresolved = JSON.stringify(data).includes('"UPDATE');
+    if (unresolved) {
+      console.warn('property.json still has UPDATE placeholders — site will show fallback copy.');
+      return;
+    }
+    const name = data.project_name || '';
+    const loc = data.location || {};
+    const inv = data.inventory || {};
+    const lots = inv.lots || {};
+    const units = inv.complex_units || {};
+    const media = data.media || {};
+    const contact = data.contact || {};
+    const timeline = data.timeline || {};
+
+    setBind('title', `${name} — availability`);
+    setBind('og_title', name);
+    setBind('og_description', loc.description || '');
+    setBind('project_name', name);
+    setBind('hero_h1', `${name} — ${loc.city || ''}${loc.city && loc.country ? ', ' : ''}${loc.country || ''}`);
+    setBind('hero_sub', loc.description || '');
+    setBind('lots_available', lots.available ?? lots.total ?? '');
+    setBind('units_total', units.total ?? '—');
+    setBind('price_entry', pickEntryPrice(lots.price_range) || '—');
+    setBind('phase_1', timeline.phase_1 || '—');
+    setBind('completion', timeline.completion || '—');
+    setBind('sales_name', contact.sales_name || 'Sales contact');
+    setBind('sales_phone', contact.sales_phone || '—');
+    setBind('sales_email', contact.sales_email || '—');
+    setBind('sales_whatsapp', contact.sales_whatsapp || '—');
+    setHref('sales_phone_link', contact.sales_phone ? `tel:${contact.sales_phone}` : '');
+    setHref('sales_email_link', contact.sales_email ? `mailto:${contact.sales_email}` : '');
+    const waDigits = (contact.sales_whatsapp || '').replace(/[^\d]/g, '');
+    setHref('sales_whatsapp_link', waDigits ? `https://wa.me/${waDigits}` : '');
+    const heroVideo = document.querySelector('.hero video');
+    const fallbackImg = document.querySelector('.hero .fallback');
+    if (media.drone_video) {
+      setSrc('drone_video', media.drone_video);
+      // If video fails to load, show the fallback photo
+      if (heroVideo) {
+        heroVideo.addEventListener('error', () => {
+          heroVideo.style.display = 'none';
+          if (fallbackImg) { fallbackImg.style.display = 'block'; }
+        });
+      }
+    } else if (fallbackImg) {
+      // No video provided — show fallback photo immediately
+      if (heroVideo) heroVideo.style.display = 'none';
+      fallbackImg.style.display = 'block';
+    }
+    if (Array.isArray(media.photos) && media.photos[0]) setSrc('photo_hero', media.photos[0]);
+
+    const list = document.getElementById('selling-points-list');
+    if (list && Array.isArray(data.key_selling_points)) {
+      data.key_selling_points.forEach(pt => {
+        const li = document.createElement('li');
+        li.style.padding = '8px 0';
+        li.style.borderBottom = '1px solid var(--line)';
+        li.textContent = pt;
+        list.appendChild(li);
+      });
+    }
+
+    // Mobile sticky CTAs
+    if (waDigits) document.getElementById('mobile-wa').href = `https://wa.me/${waDigits}`;
+    if (contact.sales_phone) document.getElementById('mobile-call').href = `tel:${contact.sales_phone}`;
+  }).catch(() => {});
+
+  // --- Return-visitor flag (feeds lead score) ---
+  try {
+    if (localStorage.getItem('rlg_visited')) {
+      sessionStorage.setItem('rlg_return_visitor', '1');
+    } else {
+      localStorage.setItem('rlg_visited', new Date().toISOString());
+    }
+  } catch (e) { /* storage blocked */ }
+
+  // --- UTM + ad-set capture ---
+  const params = new URLSearchParams(location.search);
+  const utm = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']
+    .map(k => params.get(k) ? `${k}=${params.get(k)}` : null)
+    .filter(Boolean).join('|') || 'direct';
+  // Meta's {{adset.id}} URL macro is the stable join key. UTM parsing is the
+  // fallback for organic/referral traffic and for legacy rows.
+  const adsetId = (params.get('adset_id') || params.get('adset') || '').slice(0, 40);
+
+  // --- Form submit ---
+  const form = document.getElementById('lead-form');
+  const errEl = document.getElementById('form-error');
+  const btn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const eventId = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now());
+    const payload = {
+      name: form.name.value.trim(),
+      phone: form.phone.value.trim(),
+      interest: form.interest.value,
+      website_url: form.website_url.value, // Honeypot
+      source: utm,
+      adset_id: adsetId,
+      referrer: document.referrer || '',
+      return_visitor: sessionStorage.getItem('rlg_return_visitor') === '1',
+      submitted_at: new Date().toISOString(),
+      event_id: eventId,
+      user_agent: navigator.userAgent || '',
+      page: location.href,
+    };
+
+    try {
+      if (window.fbq) fbq('track', 'Lead', {}, { eventID: eventId });
+      const res = await fetch(FORM_HANDLER_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        redirect: 'follow',
+      });
+      if (!res.ok) throw new Error('bad status');
+      
+      // Store in sessionStorage (primary) + URL params (fallback for incognito/crashes)
+      sessionStorage.setItem('rlg_last_lead_id', eventId);
+      sessionStorage.setItem('rlg_last_event_id', eventId);
+      sessionStorage.setItem('rlg_last_interest', payload.interest);
+
+      const tyUrl = new URL('./thank-you.html', location.href);
+      tyUrl.searchParams.set('lead_id', eventId);
+      tyUrl.searchParams.set('event_id', eventId);
+      tyUrl.searchParams.set('interest', payload.interest);
+      location.href = tyUrl.toString();
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'See availability';
+      // Show WhatsApp fallback if available (form handler may be down)
+      const waLink = document.getElementById('mobile-wa');
+      const waHref = waLink && waLink.href !== '#' ? waLink.href : '';
+      if (waHref) {
+        const msg = encodeURIComponent('Hi, I just tried the form but it had an error. I\'m ' + payload.name + ', interested in ' + payload.interest + '. Phone: ' + payload.phone);
+        const waUrl = waHref.split('?')[0] + '?text=' + msg;
+        errEl.innerHTML = 'The form hit an error. <a href="' + waUrl + '" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:underline;">WhatsApp us directly</a> instead.';
+      } else {
+        errEl.textContent = 'Something went wrong. Please try again or WhatsApp us directly.';
+      }
+      errEl.style.display = 'block';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

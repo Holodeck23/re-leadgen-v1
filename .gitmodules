@@ -1,0 +1,6 @@
+[submodule "vendor/claude-ads"]
+	path = vendor/claude-ads
+	url = https://github.com/AgriciDaniel/claude-ads.git
+[submodule "vendor/marketingskills"]
+	path = vendor/marketingskills
+	url = https://github.com/coreyhaines31/marketingskills.git
